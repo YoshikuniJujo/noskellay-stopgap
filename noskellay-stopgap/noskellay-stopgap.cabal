@@ -36,6 +36,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , simplest-sqlite
     , text
     , websockets
   default-language: Haskell2010
@@ -49,6 +50,7 @@ executable createTable
       aeson
     , base >=4.7 && <5
     , noskellay-stopgap
+    , simplest-sqlite
     , text
     , websockets
   default-language: Haskell2010
@@ -66,6 +68,7 @@ executable noskellay-stopgap-exe
       aeson
     , base >=4.7 && <5
     , noskellay-stopgap
+    , simplest-sqlite
     , text
     , websockets
   default-language: Haskell2010
@@ -84,6 +87,7 @@ test-suite noskellay-stopgap-test
       aeson
     , base >=4.7 && <5
     , noskellay-stopgap
+    , simplest-sqlite
     , text
     , websockets
   default-language: Haskell2010

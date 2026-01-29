@@ -24,6 +24,7 @@ dependencies:
 - text
 - websockets
 - aeson
+- simplest-sqlite
 
 ghc-options:
 - -Wall
