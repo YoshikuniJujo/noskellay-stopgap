@@ -25,7 +25,9 @@ source-repository head
 
 library
   exposed-modules:
+      Event.Database
       Lib
+      ToolsTH
   other-modules:
       Paths_noskellay_stopgap
   autogen-modules:
@@ -37,6 +39,7 @@ library
       aeson
     , base >=4.7 && <5
     , simplest-sqlite
+    , template-haskell
     , text
     , websockets
   default-language: Haskell2010
@@ -51,6 +54,7 @@ executable createTable
     , base >=4.7 && <5
     , noskellay-stopgap
     , simplest-sqlite
+    , template-haskell
     , text
     , websockets
   default-language: Haskell2010
@@ -69,6 +73,7 @@ executable noskellay-stopgap-exe
     , base >=4.7 && <5
     , noskellay-stopgap
     , simplest-sqlite
+    , template-haskell
     , text
     , websockets
   default-language: Haskell2010
@@ -88,6 +93,7 @@ test-suite noskellay-stopgap-test
     , base >=4.7 && <5
     , noskellay-stopgap
     , simplest-sqlite
+    , template-haskell
     , text
     , websockets
   default-language: Haskell2010
