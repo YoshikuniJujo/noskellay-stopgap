@@ -15,13 +15,11 @@ import ToolsTH
 		varBangType (mkName "created_at")
 			$ bangType noUnpackedNoStrict (conT ''Int) ] ++ [
 		varBangType (mkName "kind")
-			$ bangType noUnpackedNoStrict (conT ''Int),
-		varBangType (mkName "a")
-			$ bangType noUnpackedNoStrict (conT ''String),
-		varBangType (mkName "b")
-			$ bangType noUnpackedNoStrict (conT ''String),
-		mkStringField "c"
-		] ++ [
+			$ bangType noUnpackedNoStrict (conT ''Int)
+		] ++
+		(mkStringField . (: "") <$> ['a' .. 'z']) ++
+		(mkStringField . ('l' :) . (: "") <$> ['a' .. 'z']) ++
+		[
 		varBangType (mkName "content")
 			$ bangType noUnpackedNoStrict (conT ''String),
 		varBangType (mkName "sig")
