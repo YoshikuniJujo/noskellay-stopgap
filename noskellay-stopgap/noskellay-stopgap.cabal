@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Event
       Event.Database
       Lib
       ToolsTH
@@ -38,9 +39,12 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
+    , ppad-secp256k1
     , simplest-sqlite
     , template-haskell
     , text
+    , unix-time
     , websockets
   default-language: Haskell2010
 
@@ -52,10 +56,13 @@ executable createTable
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , noskellay-stopgap
+    , ppad-secp256k1
     , simplest-sqlite
     , template-haskell
     , text
+    , unix-time
     , websockets
   default-language: Haskell2010
 
@@ -71,10 +78,13 @@ executable noskellay-stopgap-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , noskellay-stopgap
+    , ppad-secp256k1
     , simplest-sqlite
     , template-haskell
     , text
+    , unix-time
     , websockets
   default-language: Haskell2010
 
@@ -91,9 +101,12 @@ test-suite noskellay-stopgap-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , noskellay-stopgap
+    , ppad-secp256k1
     , simplest-sqlite
     , template-haskell
     , text
+    , unix-time
     , websockets
   default-language: Haskell2010

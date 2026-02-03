@@ -1,10 +1,16 @@
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
 module Event.Database where
 
+import Control.Arrow
+import Data.Map qualified as Map
+import Data.Text qualified as T
 import Language.Haskell.TH
 import ToolsTH
+import Event qualified as E
 
 (: []) <$> dataD (cxt []) (mkName "Foo") [] Nothing [
 	recC (mkName "Foo") ([
@@ -28,3 +34,14 @@ import ToolsTH
 			$ bangType noUnpackedNoStrict (conT ''String)
 		])
 	] [derivClause Nothing [conT ''Show]]
+
+baz d e = recConE d [
+	(mkName "id" ,) <$> varE 'Map.lookup `appE` varE (mkName "id") `appE` varE e
+	]
+
+eventToTag :: E.Event -> String -> Maybe String
+eventToTag e = (T.unpack . fst <$>) . (`Map.lookup` E.tags e) . T.pack
+
+bar e = foo e <$> ((: "") <$> ['a' .. 'z'])
+
+foo e k = (mkName k ,) <$> varE 'eventToTag `appE` varE e `appE` litE (StringL k)

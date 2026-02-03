@@ -22,10 +22,13 @@ description:         Please see the README on GitHub at <https://github.com/Yosh
 dependencies:
 - base >= 4.7 && < 5
 - template-haskell
+- containers
 - text
-- websockets
 - aeson
 - simplest-sqlite
+- ppad-secp256k1
+- websockets
+- unix-time
 
 ghc-options:
 - -Wall

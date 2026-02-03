@@ -8,5 +8,5 @@ import Language.Haskell.TH
 noUnpackedNoStrict :: Quote m => m Bang
 noUnpackedNoStrict = bang noSourceUnpackedness noSourceStrictness
 
-mkStringField nm =
-	varBangType (mkName nm) $ bangType noUnpackedNoStrict (conT ''String)
+mkStringField nm = varBangType (mkName nm)
+	. bangType noUnpackedNoStrict $ (conT ''Maybe) `appT` (conT ''String)
