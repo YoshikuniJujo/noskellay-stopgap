@@ -5,16 +5,25 @@
 
 module Event.Database where
 
+import Prelude hiding (id)
+import Foreign.C.Types
 import Control.Arrow
+import Data.Maybe
 import Data.Map qualified as Map
+import Data.ByteString qualified as BS
+import Data.ByteString.Char8 qualified as BSC
 import Data.Text qualified as T
+import Data.UnixTime
 import Language.Haskell.TH
 import ToolsTH
 import Nostr.Event.Signed qualified as Signed
+import Crypto.Curve.Secp256k1
+
+import Tools
 
 (: []) <$> dataD (cxt []) (mkName "Foo") [] Nothing [
 	recC (mkName "Foo") ([
-		varBangType (mkName "id")
+		varBangType (mkName "idnt")
 			$ bangType noUnpackedNoStrict (conT ''String),
 		varBangType (mkName "pubkey")
 			$ bangType noUnpackedNoStrict (conT ''String),
@@ -26,18 +35,28 @@ import Nostr.Event.Signed qualified as Signed
 		(mkStringField . (: "") <$> ['a' .. 'z']) ++
 		(mkStringField . ('l' :) . (: "") <$> ['a' .. 'z']) ++
 		[
+		varBangType (mkName "tags")
+			$ bangType noUnpackedNoStrict (conT ''String),
 		varBangType (mkName "content")
 			$ bangType noUnpackedNoStrict (conT ''String),
 		varBangType (mkName "sig")
-			$ bangType noUnpackedNoStrict (conT ''String),
-		varBangType (mkName "tags")
 			$ bangType noUnpackedNoStrict (conT ''String)
 		])
 	] [derivClause Nothing [conT ''Show]]
 
 baz d e = recConE d [
-	(mkName "id" ,) <$> varE 'Map.lookup `appE` varE (mkName "id") `appE` varE e
+	('idnt ,) <$> varE 'bsToHexStr `appE` (varE 'Signed.id `appE` varE e),
+	('pubkey ,) <$> varE 'bsToHexStr `appE`
+		(varE 'BS.tail `appE`
+		(varE 'serialize_point `appE`
+		(varE 'Signed.pubkey `appE` varE e))),
+	('created_at ,) <$> varE 'unixTimeToInt `appE`
+		(varE 'Signed.created_at `appE` varE e),
+	('kind ,) <$> varE 'Signed.kind `appE` varE e
 	]
+
+unixTimeToInt :: UnixTime -> Int
+unixTimeToInt ut = let CTime i = toEpochTime ut in fromIntegral i
 
 eventToTag :: Signed.E -> String -> Maybe String
 eventToTag e = (T.unpack . fst <$>) . (`Map.lookup` Signed.tags e) . T.pack
@@ -45,3 +64,8 @@ eventToTag e = (T.unpack . fst <$>) . (`Map.lookup` Signed.tags e) . T.pack
 bar e = foo e <$> ((: "") <$> ['a' .. 'z'])
 
 foo e k = (mkName k ,) <$> varE 'eventToTag `appE` varE e `appE` litE (StringL k)
+
+-- TRY IT
+-- ghci> ev <- getSampleSigned "/path/to/sec_file" "/path/to/pub_file"
+-- ghci> :set -XTemplateHaskell
+-- ghci> $(baz (mkName "Foo") 'ev)

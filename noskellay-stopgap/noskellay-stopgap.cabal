@@ -27,6 +27,8 @@ library
   exposed-modules:
       Event.Database
       Lib
+      Samples
+      Tools
       ToolsTH
   other-modules:
       Paths_noskellay_stopgap
@@ -38,6 +40,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , ppad-secp256k1
     , simplest-sqlite
@@ -56,6 +59,7 @@ executable createTable
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
@@ -79,6 +83,7 @@ executable noskellay-stopgap-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
@@ -103,6 +108,7 @@ test-suite noskellay-stopgap-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
