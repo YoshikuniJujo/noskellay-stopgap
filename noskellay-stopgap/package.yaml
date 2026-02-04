@@ -29,6 +29,7 @@ dependencies:
 - ppad-secp256k1
 - websockets
 - unix-time
+- try-nostr-event
 
 ghc-options:
 - -Wall

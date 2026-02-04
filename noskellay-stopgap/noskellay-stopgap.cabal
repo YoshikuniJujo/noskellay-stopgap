@@ -25,7 +25,6 @@ source-repository head
 
 library
   exposed-modules:
-      Event
       Event.Database
       Lib
       ToolsTH
@@ -44,6 +43,7 @@ library
     , simplest-sqlite
     , template-haskell
     , text
+    , try-nostr-event
     , unix-time
     , websockets
   default-language: Haskell2010
@@ -62,6 +62,7 @@ executable createTable
     , simplest-sqlite
     , template-haskell
     , text
+    , try-nostr-event
     , unix-time
     , websockets
   default-language: Haskell2010
@@ -84,6 +85,7 @@ executable noskellay-stopgap-exe
     , simplest-sqlite
     , template-haskell
     , text
+    , try-nostr-event
     , unix-time
     , websockets
   default-language: Haskell2010
@@ -107,6 +109,7 @@ test-suite noskellay-stopgap-test
     , simplest-sqlite
     , template-haskell
     , text
+    , try-nostr-event
     , unix-time
     , websockets
   default-language: Haskell2010

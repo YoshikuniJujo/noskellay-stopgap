@@ -10,7 +10,7 @@ import Data.Map qualified as Map
 import Data.Text qualified as T
 import Language.Haskell.TH
 import ToolsTH
-import Event qualified as E
+import Nostr.Event.Signed qualified as Signed
 
 (: []) <$> dataD (cxt []) (mkName "Foo") [] Nothing [
 	recC (mkName "Foo") ([
@@ -39,8 +39,8 @@ baz d e = recConE d [
 	(mkName "id" ,) <$> varE 'Map.lookup `appE` varE (mkName "id") `appE` varE e
 	]
 
-eventToTag :: E.Event -> String -> Maybe String
-eventToTag e = (T.unpack . fst <$>) . (`Map.lookup` E.tags e) . T.pack
+eventToTag :: Signed.E -> String -> Maybe String
+eventToTag e = (T.unpack . fst <$>) . (`Map.lookup` Signed.tags e) . T.pack
 
 bar e = foo e <$> ((: "") <$> ['a' .. 'z'])
 
