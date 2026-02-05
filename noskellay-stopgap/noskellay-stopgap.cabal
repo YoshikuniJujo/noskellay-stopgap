@@ -75,6 +75,27 @@ executable createTable
     , websockets
   default-language: Haskell2010
 
+executable createTableMini
+  main-is: createTableMini.hs
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bech32
+    , bytestring
+    , containers
+    , noskellay-stopgap
+    , ppad-secp256k1
+    , simplest-sqlite
+    , template-haskell
+    , text
+    , try-nostr-event
+    , unix-time
+    , websockets
+  default-language: Haskell2010
+
 executable noskellay-stopgap-exe
   main-is: Main.hs
   other-modules:

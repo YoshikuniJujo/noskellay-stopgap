@@ -67,6 +67,16 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - noskellay-stopgap
+  createTableMini:
+    main:                createTableMini.hs
+    other-modules:       []
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - noskellay-stopgap
 
 tests:
   noskellay-stopgap-test:
