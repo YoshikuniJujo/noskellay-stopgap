@@ -40,6 +40,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bech32
     , bytestring
     , containers
     , ppad-secp256k1
@@ -59,6 +60,7 @@ executable createTable
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bech32
     , bytestring
     , containers
     , noskellay-stopgap
@@ -83,6 +85,7 @@ executable noskellay-stopgap-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bech32
     , bytestring
     , containers
     , noskellay-stopgap
@@ -108,6 +111,7 @@ test-suite noskellay-stopgap-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bech32
     , bytestring
     , containers
     , noskellay-stopgap

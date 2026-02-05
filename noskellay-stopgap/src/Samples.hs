@@ -1,14 +1,44 @@
 {-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ViewPatterns #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
 module Samples where
 
+import Control.Monad
+import Data.Map qualified as Map
+import Data.ByteString qualified as BS
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
+import Data.UnixTime
+import Codec.Binary.Bech32
 import Nostr.Event qualified as Event
 import Nostr.Event.Signed qualified as Signed
 
 getSampleSigned :: FilePath -> FilePath -> IO Signed.E
 getSampleSigned scfp pbfp = do
-	Just sc <- Event.secretFromBech32 . T.init <$> T.readFile scfp
-	Signed.signature sc =<< Event.sample pbfp
+	Just sc <- Event.secretFromBech32 . chomp <$> T.readFile scfp
+	Signed.signature sc =<< sample pbfp
+
+chomp :: T.Text -> T.Text
+chomp t = if T.last t == '\n' then T.init t else t
+
+sample :: FilePath -> IO Event.E
+sample fp = do
+	Just pub <- dataPart . chomp <$> T.readFile fp
+	Just pk <- pure $ Event.parse_point pub
+	ut <- getUnixTime
+	pure Event.E {
+		Event.pubkey = pk,
+		Event.created_at = ut,
+		Event.kind = 1,
+		Event.tags = Map.singleton "a" ("foo", ["bar", "baz"]),
+		Event.content = "Hello" }
+
+dataPart :: T.Text -> Maybe BS.ByteString
+dataPart b = let Right (_, dataPartToBytes -> d) = decode b in d
+
+dataPart' :: T.Text -> T.Text -> Maybe BS.ByteString
+dataPart' tg0 b = let Right (humanReadablePartToText -> tg, dataPartToBytes -> d) = decode b in do
+	guard $ tg == tg0
+	d

@@ -30,6 +30,7 @@ dependencies:
 - ppad-secp256k1
 - websockets
 - unix-time
+- bech32
 - try-nostr-event
 
 ghc-options:
