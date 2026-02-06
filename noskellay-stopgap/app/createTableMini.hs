@@ -8,7 +8,7 @@ main = do
 	withSQLite "foo_mini.sqlite3" $ \db -> do
 		withPrepared db (
 			"CREATE TABLE events(" ++
-			"id, pubkey, created_at, kind, " ++
+			"id PRIMARY KEY, pubkey, created_at, kind, " ++
 			(('"' :) . (: "\", ") =<< ['a' .. 'c']) ++
 			"tags, content, sig)" ) step
 	pure ()
