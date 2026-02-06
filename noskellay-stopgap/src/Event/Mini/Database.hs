@@ -3,9 +3,15 @@
 
 module Event.Mini.Database where
 
+import Data.Maybe
+import Data.Map qualified as Map
 import Data.ByteString qualified as BS
+import Data.ByteString.Lazy qualified as LBS
+import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
+import Data.Aeson qualified as A
 import Nostr.Event.Signed qualified as Signed
+import Nostr.Event.Json qualified as EvJsn
 import Crypto.Curve.Secp256k1
 
 import Event.Database.Tools
@@ -36,6 +42,17 @@ fromSigned e = E {
 	tags = etgs e,
 	content = T.unpack $ Signed.content e,
 	sig = bsToHexStr $ Signed.sig e }
+
+toSigned :: E -> Signed.E
+toSigned e = Signed.E {
+	Signed.id = hexStrToBs $ idnt e,
+	Signed.pubkey = fromJust . parse_point . hexStrToBs $ pubkey e,
+	Signed.created_at = intToUnixTime $ created_at e,
+	Signed.kind = kind e,
+	Signed.tags = EvJsn.decodeTags . fromJust . A.decode . LBSC.pack $ tags e,
+	Signed.content = T.pack $ content e,
+	Signed.sig = hexStrToBs $ sig e,
+	Signed.verified = False }
 
 -- TRY IT
 -- ghci> ev <- getSampleSigned "/path/to/sec_file" "/path/to/pub_file"

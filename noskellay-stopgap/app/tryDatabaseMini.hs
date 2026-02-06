@@ -3,12 +3,9 @@
 {-# LANGUAGE ScopedTypeVariables, TypeApplications #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Main where
+module Main (main) where
 
-import Data.ByteString.Lazy qualified as LBS
-import Data.Aeson qualified as A
 import Database.SmplstSQLite3
-import Nostr.Event.Json qualified as EvJsn
 import Event.Mini.Database
 import System.Environment
 
@@ -22,7 +19,7 @@ main = do
 	print ev
 	let	ev' = fromSigned ev
 	print ev'
-	withSQLite "foo_mini.sqlite3" $ \db -> do
+	_ <- withSQLite "foo_mini.sqlite3" $ \db -> do
 		_ <- withPrepared db
 			"INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" \sm -> do
 			bindN sm 1 $ idnt ev'
@@ -54,7 +51,7 @@ main = do
 				-}
 			(cnt :: String) <- column sm 8
 			(sg :: String) <- column sm 9
-			print $ E {
+			let e = E {
 				idnt = idnt',
 				pubkey = pk,
 				created_at = crat,
@@ -65,4 +62,5 @@ main = do
 				tags = tgs,
 				content = cnt,
 				sig = sg }
+			print $ toSigned e
 	pure ()

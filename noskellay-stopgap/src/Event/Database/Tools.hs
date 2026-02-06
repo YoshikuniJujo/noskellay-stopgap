@@ -19,5 +19,8 @@ etgs = LBSC.unpack . A.encode . EvJsn.encodeTags . Signed.tags
 unixTimeToInt :: UnixTime -> Int
 unixTimeToInt ut = let CTime i' = toEpochTime ut in fromIntegral i'
 
+intToUnixTime :: Int -> UnixTime
+intToUnixTime = fromEpochTime . CTime . fromIntegral
+
 eventToTag :: Signed.E -> String -> Maybe String
 eventToTag e' = (T.unpack . fst <$>) . (`Map.lookup` Signed.tags e') . T.pack
