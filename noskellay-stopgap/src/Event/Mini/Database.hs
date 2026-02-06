@@ -52,10 +52,6 @@ toSigned e = Signed.E {
 	Signed.sig = hexStrToBs $ sig e,
 	Signed.verified = verified e }
 
--- TRY IT
--- ghci> ev <- getSampleSigned "/path/to/sec_file" "/path/to/pub_file"
--- ghci> Event.Mini.Database.fromSigned ev
-
 insert :: SQLite -> E -> IO (Result, String)
 insert db ev' = withPrepared db (
 		"INSERT INTO events VALUES(" ++
@@ -69,18 +65,21 @@ selectAll1 :: SQLite -> IO ((Result, Signed.E), String)
 selectAll1 db = withPrepared db
 	"SELECT * FROM events" \sm -> do
 	r <- step sm
-	(idnt' :: String) <- column sm 0
-	(pk :: String) <- column sm 1
-	(crat :: Int) <- column sm 2
-	(knd :: Int) <- column sm 3
-	(a' :: Maybe String) <- column sm 4
-	(b' :: Maybe String) <- column sm 5
-	(c' :: Maybe String) <- column sm 6
+
+	idnt' <- column sm 0
+	pk <- column sm 1
+	crat <- column sm 2
+	knd <- column sm 3
+	a' <- column sm 4
+	b' <- column sm 5
+	c' <- column sm 6
 	tgs <- column sm 7
-	(cnt :: String) <- column sm 8
-	(sg :: String) <- column sm 9
-	(vrf :: Bool) <- column sm 10
+	cnt <- column sm 8
+	sg <- column sm 9
+	vrf <- column sm 10
+
 	let e = E {
+
 		idnt = idnt',
 		pubkey = pk,
 		created_at = crat,
@@ -91,5 +90,7 @@ selectAll1 db = withPrepared db
 		tags = tgs,
 		content = cnt,
 		sig = sg,
-		verified = vrf }
+		verified = vrf
+
+		}
 	pure (r, toSigned e)
