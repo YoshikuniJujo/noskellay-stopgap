@@ -10,5 +10,5 @@ main = do
 			"CREATE TABLE events(" ++
 			"id PRIMARY KEY, pubkey, created_at, kind, " ++
 			(('"' :) . (: "\", ") =<< ['a' .. 'c']) ++
-			"tags, content, sig)" ) step
+			"tags, content, sig, verified)" ) step
 	pure ()

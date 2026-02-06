@@ -41,7 +41,7 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 
 extra-deps:
-  - simplest-sqlite-0.1.0.4
+  - simplest-sqlite-0.1.0.5
   - ppad-secp256k1-0.5.3
   - ppad-fixed-0.1.3
   - ppad-hmac-drbg-0.2.1

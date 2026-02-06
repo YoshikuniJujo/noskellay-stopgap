@@ -27,7 +27,7 @@ main = do
 
 insert :: SQLite -> E -> IO (Result, String)
 insert db ev' = withPrepared db
-	"INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" \sm -> do
+	"INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" \sm -> do
 	bindN sm 1 $ idnt ev'
 	bindN sm 2 $ pubkey ev'
 	bindN sm 3 $ created_at ev'
@@ -38,6 +38,7 @@ insert db ev' = withPrepared db
 	bindN sm 8 $ tags ev'
 	bindN sm 9 $ content ev'
 	bindN sm 10 $ sig ev'
+	bindN sm 11 $ verified ev'
 	step sm
 
 select :: SQLite -> IO (Signed.E, String)
@@ -54,6 +55,7 @@ select db = withPrepared db
 	tgs <- column sm 7
 	(cnt :: String) <- column sm 8
 	(sg :: String) <- column sm 9
+	(vrf :: Bool) <- column sm 10
 	let e = E {
 		idnt = idnt',
 		pubkey = pk,
@@ -64,5 +66,6 @@ select db = withPrepared db
 		c = c',
 		tags = tgs,
 		content = cnt,
-		sig = sg }
+		sig = sg,
+		verified = vrf }
 	pure $ toSigned e

@@ -5,12 +5,12 @@
 
 packages:
 - completed:
-    hackage: simplest-sqlite-0.1.0.4@sha256:d821c960dbbd1da8a23219a86ebd294466bcec9dc0cb075bf81a5eee53b71920,1204
+    hackage: simplest-sqlite-0.1.0.5@sha256:ac8fa13d9128a42700abc211113a9d2336feaea6bcf1ef2a8c7271e555e693cb,1204
     pantry-tree:
-      sha256: fe6a23f7e045355f69cc5ab7d7882a522233ca10718b0c4b8267cff8eb940ee7
+      sha256: 1db7d8860e0c3a29e4be07ab4b7ea13be6d18c8e4afbcc1dc95b138ff882d98b
       size: 617
   original:
-    hackage: simplest-sqlite-0.1.0.4
+    hackage: simplest-sqlite-0.1.0.5
 - completed:
     hackage: ppad-secp256k1-0.5.3@sha256:635e3509b1da5b700fc4285222f7f93406554fcbcdbf7081bee65f9f44f7dc7e,2340
     pantry-tree:
