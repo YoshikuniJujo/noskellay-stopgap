@@ -17,8 +17,9 @@ import Nostr.Event.Signed qualified as Signed
 import Nostr.Event.Json qualified as EvJsn
 import Crypto.Curve.Secp256k1
 
-import Event.Database.Type
 import Tools
+import Event.Database.Type
+import Event.Database.Tools
 
 baz :: Quote m => Name -> Name -> m Exp
 baz d' e' = recConE d' $ [
@@ -38,12 +39,6 @@ baz d' e' = recConE d' $ [
 		(varE 'Signed.sig `appE` varE e')
 	]
 
-unixTimeToInt :: UnixTime -> Int
-unixTimeToInt ut = let CTime i' = toEpochTime ut in fromIntegral i'
-
-eventToTag :: Signed.E -> String -> Maybe String
-eventToTag e' = (T.unpack . fst <$>) . (`Map.lookup` Signed.tags e') . T.pack
-
 bar :: Quote m => Name -> [m (Name, Exp)]
 bar e' = foo e' <$> ((: "") <$> ['a' .. 'z'])
 
@@ -53,6 +48,3 @@ barbar e' = foo e' <$> (('l' :) . (: "") <$> ['a' .. 'z'])
 foo :: Quote m => Name -> String -> m (Name, Exp)
 foo e' k' = (mkName k' ,)
 	<$> varE 'eventToTag `appE` varE e' `appE` litE (StringL k')
-
-etgs :: Signed.E -> String
-etgs = LBSC.unpack . A.encode . EvJsn.encodeTags . Signed.tags

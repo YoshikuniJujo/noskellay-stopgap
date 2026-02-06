@@ -27,7 +27,9 @@ library
   exposed-modules:
       Event.Database
       Event.Database.TH
+      Event.Database.Tools
       Event.Database.Type
+      Event.Mini.Database
       Lib
       Samples
       Tools
