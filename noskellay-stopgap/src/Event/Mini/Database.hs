@@ -1,4 +1,5 @@
 {-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
@@ -8,7 +9,9 @@ module Event.Mini.Database (
 	insert, selectAll1
 	) where
 
+import Language.Haskell.TH
 import Data.Maybe
+import Data.List qualified as L
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
@@ -18,23 +21,11 @@ import Nostr.Event.Json qualified as EvJsn
 import Crypto.Curve.Secp256k1
 
 import Event.Database.Tools
+import Event.Mini.Database.TH
+import Event.Mini.Database.Type
 import Tools
 
 import Database.SmplstSQLite3
-
-data E = E {
-	idnt :: String,
-	pubkey :: String,
-	created_at :: Int,
-	kind :: Int,
-	a :: Maybe String,
-	b :: Maybe String,
-	c :: Maybe String,
-	tags :: String,
-	content :: String,
-	sig :: String,
-	verified :: Bool }
-	deriving Show
 
 fromSigned :: Signed.E -> E
 fromSigned e = E {
@@ -66,20 +57,13 @@ toSigned e = Signed.E {
 -- ghci> Event.Mini.Database.fromSigned ev
 
 insert :: SQLite -> E -> IO (Result, String)
-insert db ev' = withPrepared db
-	"INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" \sm -> do
-	bindN sm 1 $ idnt ev'
-	bindN sm 2 $ pubkey ev'
-	bindN sm 3 $ created_at ev'
-	bindN sm 4 $ kind ev'
-	bindN sm 5 $ a ev'
-	bindN sm 6 $ b ev'
-	bindN sm 7 $ c ev'
-	bindN sm 8 $ tags ev'
-	bindN sm 9 $ content ev'
-	bindN sm 10 $ sig ev'
-	bindN sm 11 $ verified ev'
-	step sm
+insert db ev' = withPrepared db (
+		"INSERT INTO events VALUES(" ++
+		L.intercalate ", "
+			((: "") <$> replicate (length columns) '?') ++
+		")" ) \sm ->
+	$(doE $ binds 'sm 'ev' (zip [1 ..] columns) ++
+		[noBindS $ varE 'step `appE` varE 'sm])
 
 selectAll1 :: SQLite -> IO ((Result, Signed.E), String)
 selectAll1 db = withPrepared db

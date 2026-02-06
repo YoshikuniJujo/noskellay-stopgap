@@ -6,7 +6,6 @@
 module Main (main) where
 
 import Database.SmplstSQLite3
-import Nostr.Event.Signed qualified as Signed
 import System.Environment
 
 import Event.Mini.Database
