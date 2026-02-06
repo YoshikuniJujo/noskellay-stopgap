@@ -1,11 +1,16 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Event.Database.Tools where
+module Event.Database.Tools (
+
+	unixTimeToInt, intToUnixTime,
+
+	etgs, eventToTag
+
+	) where
 
 import Foreign.C.Types
 import Data.Map qualified as Map
-import Data.ByteString.Lazy qualified as LBS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
 import Data.Aeson qualified as A

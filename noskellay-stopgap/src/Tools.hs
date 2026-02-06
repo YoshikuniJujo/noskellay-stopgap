@@ -1,7 +1,7 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Tools where
+module Tools (bsToHexStr, hexStrToBs, separate) where
 
 import Data.Char
 import Data.ByteString qualified as BS
@@ -16,5 +16,6 @@ bsToHexStr = concat . (sh <$>) . map ord . BSC.unpack
 hexStrToBs :: String -> BS.ByteString
 hexStrToBs = BS.pack . (fst . head . readHex <$>) . separate 2
 
+separate :: Int -> String -> [String]
 separate _ "" = []
 separate n s = take n s : separate n (drop n s)

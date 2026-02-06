@@ -5,18 +5,12 @@
 
 module Event.Database.TH (baz) where
 
-import Foreign.C.Types
 import Control.Arrow
-import Data.Map qualified as Map
 import Data.Char
 import Data.ByteString qualified as BS
-import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
-import Data.UnixTime
-import Data.Aeson qualified as A
 import Language.Haskell.TH
 import Nostr.Event.Signed qualified as Signed
-import Nostr.Event.Json qualified as EvJsn
 import Crypto.Curve.Secp256k1
 
 import Tools
@@ -38,7 +32,8 @@ baz d' e' = recConE d' $ [
 	('content ,) <$> varE 'T.unpack `appE`
 		(varE 'Signed.content `appE` varE e'),
 	('sig ,) <$> varE 'bsToHexStr `appE`
-		(varE 'Signed.sig `appE` varE e')
+		(varE 'Signed.sig `appE` varE e'),
+	('verified ,) <$> varE 'Signed.verified `appE` varE e'
 	]
 
 bar :: Quote m => Name -> [m (Name, Exp)]

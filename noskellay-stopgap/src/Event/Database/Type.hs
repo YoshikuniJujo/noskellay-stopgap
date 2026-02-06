@@ -26,6 +26,8 @@ import ToolsTH
 		varBangType (mkName "content")
 			$ bangType noUnpackedNoStrict (conT ''String),
 		varBangType (mkName "sig")
-			$ bangType noUnpackedNoStrict (conT ''String)
+			$ bangType noUnpackedNoStrict (conT ''String),
+		varBangType (mkName "verified")
+			$ bangType noUnpackedNoStrict (conT ''Bool)
 		])
 	] [derivClause Nothing [conT ''Show]]

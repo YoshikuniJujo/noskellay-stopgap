@@ -3,7 +3,7 @@
 {-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Event.Database where
+module Event.Database (fromSigned) where
 
 import Prelude hiding (id)
 import Language.Haskell.TH

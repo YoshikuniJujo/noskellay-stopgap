@@ -3,7 +3,7 @@
 {-# LANGUAGE ViewPatterns #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Samples where
+module Samples (getSampleSigned, dataPart') where
 
 import Control.Monad
 import Data.Map qualified as Map
@@ -38,9 +38,12 @@ sample fp = do
 		Event.content = "Hello" }
 
 dataPart :: T.Text -> Maybe BS.ByteString
-dataPart b = let Right (_, dataPartToBytes -> d) = decode b in d
+dataPart b = case decode b of
+	Right (_, dataPartToBytes -> d) -> d
+	_ -> error "bad"
 
 dataPart' :: T.Text -> T.Text -> Maybe BS.ByteString
-dataPart' tg0 b = let Right (humanReadablePartToText -> tg, dataPartToBytes -> d) = decode b in do
-	guard $ tg == tg0
-	d
+dataPart' tg0 b = case decode b of
+	Right (humanReadablePartToText -> tg, dataPartToBytes -> d) ->
+		guard (tg == tg0) *> d
+	_ -> error "bad"
