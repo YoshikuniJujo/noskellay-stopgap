@@ -32,7 +32,9 @@ sample fp = do
 		Event.pubkey = pk,
 		Event.created_at = ut,
 		Event.kind = 1,
-		Event.tags = Map.singleton "a" ("foo", ["bar", "baz"]),
+		Event.tags =
+			Map.insert "A" ("bar", ["baz", "hoge"])
+				$ Map.singleton "a" ("foo", ["bar", "baz"]),
 		Event.content = "Hello" }
 
 dataPart :: T.Text -> Maybe BS.ByteString

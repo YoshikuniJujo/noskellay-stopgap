@@ -6,7 +6,9 @@
 module Event.Database.TH (baz) where
 
 import Foreign.C.Types
+import Control.Arrow
 import Data.Map qualified as Map
+import Data.Char
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
@@ -40,11 +42,11 @@ baz d' e' = recConE d' $ [
 	]
 
 bar :: Quote m => Name -> [m (Name, Exp)]
-bar e' = foo e' <$> ((: "") <$> ['a' .. 'z'])
+bar e' = foo e' <$> ((id &&& id) . (: "") <$> ['a' .. 'z'])
 
 barbar :: Quote m => Name -> [m (Name, Exp)]
-barbar e' = foo e' <$> (('l' :) . (: "") <$> ['a' .. 'z'])
+barbar e' = foo e' <$> ((('l' :) &&& (toUpper <$>)) . (: "") <$> ['a' .. 'z'])
 
-foo :: Quote m => Name -> String -> m (Name, Exp)
-foo e' k' = (mkName k' ,)
-	<$> varE 'eventToTag `appE` varE e' `appE` litE (StringL k')
+foo :: Quote m => Name -> (String, String) -> m (Name, Exp)
+foo e' (k', k'') = (mkName k' ,)
+	<$> varE 'eventToTag `appE` varE e' `appE` litE (StringL k'')
