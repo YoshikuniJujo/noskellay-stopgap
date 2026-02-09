@@ -22,4 +22,7 @@ main = do
 	withSQLite "foo_mini.sqlite3" $ \db -> do
 		print =<< insert db ev'
 		putStrLn ""
-		print =<< selectAll1 db
+		(r, _) <- selectAll db
+		print r
+		print $ length r
+		print =<< count db

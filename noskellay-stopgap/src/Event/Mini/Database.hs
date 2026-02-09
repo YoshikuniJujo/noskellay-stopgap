@@ -6,9 +6,10 @@
 
 module Event.Mini.Database (
 	E(..), fromSigned, toSigned,
-	insert, selectAll1
+	insert, count, selectAll, selectAll1
 	) where
 
+import Data.Function
 import Data.Maybe
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
@@ -58,3 +59,41 @@ insert db ev' = withPrepared db (insertCommand Mini.columns) \sm ->
 selectAll1 :: SQLite -> IO ((Result, Signed.E), String)
 selectAll1 db = withPrepared db "SELECT * FROM events" \sm ->
 	$(mkSelectAll1 Mini.columns 'sm 'E 'toSigned)
+
+count :: SQLite -> IO (Int, String)
+count db = withPrepared db "SELECT COUNT(*) FROM events" \sm -> do
+	_ <- step sm
+	column sm 0
+
+selectAll :: SQLite -> IO ([Signed.E], String)
+selectAll db = withPrepared db "SELECT * FROM events" \sm ->
+	fix \go -> do
+		r <- step sm
+		case r of
+			Done -> pure []
+			Row -> do
+				idnt' <- column sm 0
+				pk <- column sm 1
+				crat <- column sm 2
+				knd <- column sm 3
+				aa <- column sm 4
+				bb <- column sm 5
+				cc <- column sm 6
+				tgs <- column sm 7
+				cnt <- column sm 8
+				sg <- column sm 9
+				vrf <- column sm 10
+				let e = E {
+					idnt = idnt',
+					pubkey = pk,
+					created_at = crat,
+					kind = knd,
+					a = aa,
+					b = bb,
+					c = cc,
+					tags = tgs,
+					content = cnt,
+					sig = sg,
+					verified = vrf }
+				(toSigned e :) <$> go
+			_ -> error "bad"
