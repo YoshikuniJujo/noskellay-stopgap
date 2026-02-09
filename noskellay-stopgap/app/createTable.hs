@@ -13,5 +13,5 @@ main = do
 			"id, pubkey, created_at, kind, " ++
 			(('"' :) . (: "\", ") =<< ['a' .. 'z']) ++
 			(("\"L" ++) . (: "\", ") =<< ['A' .. 'Z']) ++
-			"tags, content, sig)" ) step
+			"tags, content, sig, verified)" ) step
 	pure ()

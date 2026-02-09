@@ -19,7 +19,8 @@ import Nostr.Event.Json qualified as EvJsn
 import Crypto.Curve.Secp256k1
 
 import Event.Database.Tools
-import Event.Mini.Database.TH
+import Event.Database.TH
+import Event.Mini.Database.TH qualified as Mini
 import Event.Mini.Database.Type
 import Tools
 
@@ -51,9 +52,9 @@ toSigned e = Signed.E {
 	Signed.verified = verified e }
 
 insert :: SQLite -> E -> IO (Result, String)
-insert db ev' = withPrepared db (insertCommand columns) \sm ->
-	$(mkInsert columns 'sm 'ev')
+insert db ev' = withPrepared db (insertCommand Mini.columns) \sm ->
+	$(mkInsert Mini.columns 'sm 'ev')
 
 selectAll1 :: SQLite -> IO ((Result, Signed.E), String)
 selectAll1 db = withPrepared db "SELECT * FROM events" \sm ->
-	$(mkSelectAll columns 'sm 'E 'toSigned)
+	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
