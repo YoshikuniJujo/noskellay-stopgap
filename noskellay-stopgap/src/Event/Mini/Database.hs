@@ -57,4 +57,4 @@ insert db ev' = withPrepared db (insertCommand Mini.columns) \sm ->
 
 selectAll1 :: SQLite -> IO ((Result, Signed.E), String)
 selectAll1 db = withPrepared db "SELECT * FROM events" \sm ->
-	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
+	$(mkSelectAll1 Mini.columns 'sm 'E 'toSigned)

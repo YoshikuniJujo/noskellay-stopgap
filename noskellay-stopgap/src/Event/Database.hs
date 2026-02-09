@@ -54,4 +54,4 @@ insert db ev = withPrepared db (insertCommand columns) \sm ->
 	$(mkInsert columns 'sm 'ev)
 
 selectAll1 db = withPrepared db "SELECT * FROM events" \sm ->
-	$(mkSelectAll columns 'sm 'E 'toSigned)
+	$(mkSelectAll1 columns 'sm 'E 'toSigned)

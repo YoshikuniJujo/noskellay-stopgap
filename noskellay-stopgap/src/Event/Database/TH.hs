@@ -7,7 +7,7 @@ module Event.Database.TH (
 
 	baz,
 	insertCommand, mkInsert,
-	mkSelectAll,
+	mkSelectAll1,
 
 	columns
 
@@ -71,8 +71,8 @@ bind1 :: Quote m => Name -> Name -> Integer -> Name -> m Stmt
 bind1 sm e n fld = noBindS $ varE 'bindN `appE` varE sm
 	`appE` (litE $ IntegerL n) `appE` (varE fld `appE` varE e)
 
-mkSelectAll :: Quote m => [Name] -> Name -> Name -> Name -> m Exp
-mkSelectAll clmns sm le ts = do
+mkSelectAll1 :: Quote m => [Name] -> Name -> Name -> Name -> m Exp
+mkSelectAll1 clmns sm le ts = do
 	vs <- newName `mapM` replicate (length clmns) "x"
 	r <- newName "r"
 	e <- newName "e"
