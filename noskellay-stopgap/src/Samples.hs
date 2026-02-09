@@ -34,6 +34,7 @@ sample fp = do
 		Event.kind = 1,
 		Event.tags =
 			Map.insert "A" ("bar", ["baz", "hoge"])
+				. Map.insert "b" ("hoge", ["piyo", "huga"])
 				$ Map.singleton "a" ("foo", ["bar", "baz"]),
 		Event.content = "Hello" }
 

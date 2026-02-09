@@ -1,6 +1,6 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE BlockArguments, TupleSections #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
@@ -63,34 +63,6 @@ insert db ev' = withPrepared db (
 
 selectAll1 :: SQLite -> IO ((Result, Signed.E), String)
 selectAll1 db = withPrepared db
-	"SELECT * FROM events" \sm -> do
-	r <- step sm
+	"SELECT * FROM events" \sm -> $(do
 
-	idnt' <- column sm 0
-	pk <- column sm 1
-	crat <- column sm 2
-	knd <- column sm 3
-	a' <- column sm 4
-	b' <- column sm 5
-	c' <- column sm 6
-	tgs <- column sm 7
-	cnt <- column sm 8
-	sg <- column sm 9
-	vrf <- column sm 10
-
-	let e = E {
-
-		idnt = idnt',
-		pubkey = pk,
-		created_at = crat,
-		kind = knd,
-		a = a',
-		b = b',
-		c = c',
-		tags = tgs,
-		content = cnt,
-		sig = sg,
-		verified = vrf
-
-		}
-	pure (r, toSigned e)
+	mkSelectAll 'sm 'E 'toSigned)
