@@ -9,9 +9,7 @@ module Event.Mini.Database (
 	insert, selectAll1
 	) where
 
-import Language.Haskell.TH
 import Data.Maybe
-import Data.List qualified as L
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
@@ -53,16 +51,9 @@ toSigned e = Signed.E {
 	Signed.verified = verified e }
 
 insert :: SQLite -> E -> IO (Result, String)
-insert db ev' = withPrepared db (
-		"INSERT INTO events VALUES(" ++
-		L.intercalate ", "
-			((: "") <$> replicate (length columns) '?') ++
-		")" ) \sm ->
-	$(doE $ binds 'sm 'ev' (zip [1 ..] columns) ++
-		[noBindS $ varE 'step `appE` varE 'sm])
+insert db ev' = withPrepared db (insertCommand columns) \sm ->
+	$(mkInsert columns 'sm 'ev')
 
 selectAll1 :: SQLite -> IO ((Result, Signed.E), String)
-selectAll1 db = withPrepared db
-	"SELECT * FROM events" \sm -> $(do
-
-	mkSelectAll 'sm 'E 'toSigned)
+selectAll1 db = withPrepared db "SELECT * FROM events" \sm ->
+	$(mkSelectAll columns 'sm 'E 'toSigned)
