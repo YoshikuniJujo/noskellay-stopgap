@@ -33,6 +33,7 @@ library
       Event.Mini.Database.TH
       Event.Mini.Database.Type
       Event.MiniNew.Database
+      Event.MiniNew.Database.Type
       Lib
       Samples
       Tools
