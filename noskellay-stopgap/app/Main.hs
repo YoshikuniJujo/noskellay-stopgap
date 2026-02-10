@@ -10,6 +10,8 @@ module Main (main) where
 import Control.Arrow
 import Data.Function
 import Data.Foldable
+import Data.Traversable
+import Data.Maybe
 import Data.Text qualified as T
 import Data.Aeson
 import Data.Aeson.KeyMap qualified as KM
@@ -30,8 +32,12 @@ realMain db = runServer "0.0.0.0" 10000 \pconn -> acceptRequest pconn >>= \conn 
 			s <- maybe (pure Nothing) (recToSend db) $ decode rjsn
 			(>> go) case s of
 				Nothing -> pure ()
-				Just ((encode <$>) -> sjsns) ->
-					(\snd -> sendDataMessage conn $ Text snd Nothing) `mapM_` sjsns
+				Just ((encode <$>) -> sjsns) -> do
+					putStrLn "FOOO"
+					print sjsns
+					putStrLn ""
+--					(\snd -> sendDataMessage conn $ Text snd Nothing) `mapM_` sjsns
+					sendDataMessages conn . tail $ (\snd -> Text snd Nothing) <$> sjsns
 		r@(ControlMessage (Close _ _)) -> print r
 		r -> print r >> go
 	sendClose conn ("Good-bye!" :: T.Text)
@@ -47,9 +53,12 @@ recToSend db = \case
 			Array [String "OK", String i, Bool True, String ""]
 			]
 	Array (toList -> String "REQ" : String i : _) -> do
-		((_, ev), _) <- Db.selectAll1 db
-		pure . Just $ maybe id (\e ->
-				(Array [String "EVENT", String i, Object e] :))
+		(evs, _) <- Db.selectAll db
+		print evs
+		let	ev' = (<$> evs) \ev -> maybe Nothing (\e ->
+				(Just $ Array [String "EVENT", String i, Object e]))
 				(EvJsn.encode' ev)
+		print ev'
+		pure . Just $ catMaybes ev' ++
 			[Array [String "EOSE", String i]]
 	_ -> pure Nothing

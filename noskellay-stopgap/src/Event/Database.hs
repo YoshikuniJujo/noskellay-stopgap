@@ -7,7 +7,7 @@ module Event.Database (
 
 	fromSigned,
 	insert,
-	selectAll1
+	selectAll, selectAll1
 
 	) where
 
@@ -55,3 +55,7 @@ insert db ev = withPrepared db (insertCommand columns) \sm ->
 
 selectAll1 db = withPrepared db "SELECT * FROM events" \sm ->
 	$(mkSelectAll1 columns 'sm 'E 'toSigned)
+
+selectAll :: SQLite -> IO ([Signed.E], String)
+selectAll db = withPrepared db "SELECT * FROM events" \sm ->
+	$(mkSelectAll columns 'sm 'E 'toSigned)

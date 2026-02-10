@@ -67,4 +67,4 @@ count db = withPrepared db "SELECT COUNT(*) FROM events" \sm -> do
 
 selectAll :: SQLite -> IO ([Signed.E], String)
 selectAll db = withPrepared db "SELECT * FROM events" \sm ->
-	$(Mini.mkSelectAll Mini.columns 'sm 'E 'toSigned)
+	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
