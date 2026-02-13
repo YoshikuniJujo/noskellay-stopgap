@@ -1,4 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE ImportQualifiedPost, PackageImports #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE BlockArguments, TupleSections #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
@@ -19,8 +19,8 @@ import Data.Text qualified as T
 import Data.Aeson qualified as A
 import Database.SmplstSQLite3
 import Crypto.Curve.Secp256k1
-import Nostr.Event.Signed qualified as Signed
-import Nostr.Event.Json qualified as EvJsn
+import "try-nostr-event" Nostr.Event.Signed qualified as Signed
+import "try-nostr-event" Nostr.Event.Json qualified as EvJsn
 
 import Event.Database.TH
 import Event.Database.Type

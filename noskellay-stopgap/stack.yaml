@@ -47,9 +47,10 @@ extra-deps:
   - ppad-hmac-drbg-0.2.1
   - ppad-sha256-0.3.1
   - git: https://github.com/YoshikuniJujo/test_haskell
-    commit: 042810aac7d96c4b3cda5fd11f26e40b334f9f00
+    commit: d3edc81f00da873cd8f7f83f692a0c362dc73415
     subdirs:
     - themes/sns/nostr/try-nostr-event
+    - themes/sns/nostr/try-nostr-event-ng
 
 # Override default flag values for project packages and extra-deps
 # flags: {}

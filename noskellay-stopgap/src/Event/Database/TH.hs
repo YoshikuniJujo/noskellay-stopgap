@@ -1,4 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE ImportQualifiedPost, PackageImports #-}
 {-# LANGUAGE TemplateHaskellQuotes #-}
 {-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
@@ -22,7 +22,7 @@ import Data.ByteString qualified as BS
 import Data.Text qualified as T
 import Language.Haskell.TH
 import Database.SmplstSQLite3 hiding (Stmt)
-import Nostr.Event.Signed qualified as Signed
+import "try-nostr-event" Nostr.Event.Signed qualified as Signed
 import Crypto.Curve.Secp256k1
 
 import Tools

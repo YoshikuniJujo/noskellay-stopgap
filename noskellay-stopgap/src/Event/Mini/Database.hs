@@ -1,4 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE ImportQualifiedPost, PackageImports #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE BlockArguments, TupleSections #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -15,8 +15,8 @@ import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
 import Data.Aeson qualified as A
-import Nostr.Event.Signed qualified as Signed
-import Nostr.Event.Json qualified as EvJsn
+import "try-nostr-event" Nostr.Event.Signed qualified as Signed
+import "try-nostr-event" Nostr.Event.Json qualified as EvJsn
 import Crypto.Curve.Secp256k1
 
 import Event.Database.Tools

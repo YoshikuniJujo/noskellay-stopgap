@@ -1,4 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE ImportQualifiedPost, PackageImports #-}
 {-# LANGUAGE OverloadedStrings, OverloadedLists #-}
 {-# LANGUAGE BlockArguments, LambdaCase #-}
 {-# LANGUAGE TypeApplications #-}
@@ -18,7 +18,7 @@ import Data.Aeson.KeyMap qualified as KM
 import Network.WebSockets
 import Database.SmplstSQLite3 qualified as SQL
 
-import Nostr.Event.Json qualified as EvJsn
+import "try-nostr-event" Nostr.Event.Json qualified as EvJsn
 import Event.Database qualified as Db
 
 main :: IO ()

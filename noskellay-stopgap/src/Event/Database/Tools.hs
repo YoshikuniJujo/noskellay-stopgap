@@ -1,4 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE ImportQualifiedPost, PackageImports #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
 module Event.Database.Tools (
@@ -15,8 +15,8 @@ import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
 import Data.Aeson qualified as A
 import Data.UnixTime
-import Nostr.Event.Signed qualified as Signed
-import Nostr.Event.Json qualified as EvJsn
+import "try-nostr-event" Nostr.Event.Signed qualified as Signed
+import "try-nostr-event" Nostr.Event.Json qualified as EvJsn
 
 etgs :: Signed.E -> String
 etgs = LBSC.unpack . A.encode . EvJsn.encodeTags . Signed.tags

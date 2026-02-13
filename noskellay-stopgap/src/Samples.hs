@@ -1,4 +1,4 @@
-{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE ImportQualifiedPost, PackageImports #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ViewPatterns #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
@@ -12,8 +12,8 @@ import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import Data.UnixTime
 import Codec.Binary.Bech32
-import Nostr.Event qualified as Event
-import Nostr.Event.Signed qualified as Signed
+import "try-nostr-event" Nostr.Event qualified as Event
+import "try-nostr-event" Nostr.Event.Signed qualified as Signed
 
 getSampleSigned :: FilePath -> FilePath -> IO Signed.E
 getSampleSigned scfp pbfp = do

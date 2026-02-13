@@ -32,6 +32,7 @@ dependencies:
 - unix-time
 - bech32
 - try-nostr-event
+- try-nostr-event-ng
 
 ghc-options:
 - -Wall
