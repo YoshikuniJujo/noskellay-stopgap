@@ -33,6 +33,7 @@ dependencies:
 - bech32
 - try-nostr-event
 - try-nostr-event-ng
+- uuid
 
 ghc-options:
 - -Wall

@@ -34,6 +34,7 @@ library
       Event.Mini.Database.Type
       Event.MiniNew.Database
       Event.MiniNew.Database.Type
+      Event.NG.Mini.Database.Type
       Lib
       Samples
       Tools
@@ -58,6 +59,7 @@ library
     , try-nostr-event
     , try-nostr-event-ng
     , unix-time
+    , uuid
     , websockets
   default-language: Haskell2010
 
@@ -80,6 +82,7 @@ executable createTable
     , try-nostr-event
     , try-nostr-event-ng
     , unix-time
+    , uuid
     , websockets
   default-language: Haskell2010
 
@@ -102,6 +105,7 @@ executable createTableMini
     , try-nostr-event
     , try-nostr-event-ng
     , unix-time
+    , uuid
     , websockets
   default-language: Haskell2010
 
@@ -124,6 +128,7 @@ executable createTableMiniNew
     , try-nostr-event
     , try-nostr-event-ng
     , unix-time
+    , uuid
     , websockets
   default-language: Haskell2010
 
@@ -150,6 +155,7 @@ executable noskellay-stopgap-exe
     , try-nostr-event
     , try-nostr-event-ng
     , unix-time
+    , uuid
     , websockets
   default-language: Haskell2010
 
@@ -172,6 +178,7 @@ executable tryDatabase
     , try-nostr-event
     , try-nostr-event-ng
     , unix-time
+    , uuid
     , websockets
   default-language: Haskell2010
 
@@ -194,6 +201,7 @@ executable tryDatabaseMini
     , try-nostr-event
     , try-nostr-event-ng
     , unix-time
+    , uuid
     , websockets
   default-language: Haskell2010
 
@@ -221,5 +229,6 @@ test-suite noskellay-stopgap-test
     , try-nostr-event
     , try-nostr-event-ng
     , unix-time
+    , uuid
     , websockets
   default-language: Haskell2010
