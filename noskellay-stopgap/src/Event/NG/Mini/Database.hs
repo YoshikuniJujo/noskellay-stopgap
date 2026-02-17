@@ -23,7 +23,7 @@ import Event.NG.Mini.Database.TH qualified as Mini
 import Event.Database.Tools
 import Tools
 
-fromSigned :: Signed.E -> IO (E, [Tag])
+fromSigned :: Signed.E -> IO (E, [(T.Text, Tag)])
 fromSigned e = do
 	dct <- genId
 	pure (fromSignedE dct e, tagsToTags dct $ Signed.tags e)
@@ -51,18 +51,19 @@ fromSignedE dct e = let
 		sig = bsToHexStr $ Signed.sig e,
 		verified = Signed.verified e }
 
-tagsToTags :: Map.Map T.Text UUIDv7 -> [(T.Text, (T.Text, [T.Text]))] -> [Tag]
+tagsToTags :: Map.Map T.Text UUIDv7 -> [(T.Text, (T.Text, [T.Text]))] -> [(T.Text, Tag)]
 tagsToTags dct = \case
 	[] -> []
 	(k, (v, _)) : kvs -> case dct Map.!? k of
 		Nothing -> tagsToTags dct kvs
-		Just u -> Tag (fst u') (snd u') (T.unpack v) : tagsToTags dct kvs
+		Just u -> (k, Tag (fst u') (snd u') (T.unpack v)) : tagsToTags dct kvs
 			where u' = toInts u
 
 insert :: SQLite -> E -> IO (Result, String)
 insert db ev = withPrepared db (insertCommand Mini.columns) \sm ->
 	$(mkInsert Mini.columns 'sm 'ev)
 
-insertTags :: SQLite -> Tag -> IO (Result, String)
-insertTags db tg = withPrepared db (insertCommand' "tags" Mini.columnsTag) \sm ->
-	$(mkInsert Mini.columnsTag 'sm 'tg)
+insertTags :: SQLite -> T.Text -> Tag -> IO (Result, String)
+insertTags db nm tg =
+	withPrepared db (insertCommand' ("tags_" ++ T.unpack nm) Mini.columnsTag) \sm ->
+		$(mkInsert Mini.columnsTag 'sm 'tg)

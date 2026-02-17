@@ -15,7 +15,13 @@ main = do
 			concat (concat $ zipWith (\a b -> [a, b]) foo bar) ++
 			"tags, content, sig, verified)" ) step
 		withPrepared db """
-			CREATE TABLE tags(uuid_h, uuid_l, value)
+			CREATE TABLE tags_a(uuid_h, uuid_l, value)
+			""" step
+		withPrepared db """
+			CREATE TABLE tags_b(uuid_h, uuid_l, value)
+			""" step
+		withPrepared db """
+			CREATE TABLE tags_c(uuid_h, uuid_l, value)
 			""" step
 
 foo = ('"' :) . (: "_h\", ") <$> ['a' .. 'c']

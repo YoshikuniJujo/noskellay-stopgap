@@ -17,4 +17,4 @@ main = do
 	print ev'
 	withSQLite "foo_mini_ng.sqlite3" $ \db -> do
 		print =<< insert db (fst ev')
-		print =<< insertTags db `mapM` snd ev'
+		print =<< uncurry (insertTags db) `mapM` snd ev'
