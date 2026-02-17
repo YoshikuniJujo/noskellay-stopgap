@@ -6,6 +6,7 @@
 module Event.NG.Mini.Database where
 
 import Control.Monad
+import Data.Maybe
 import Data.Map qualified as Map
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
@@ -58,6 +59,17 @@ tagsToTags dct = \case
 		Nothing -> tagsToTags dct kvs
 		Just u -> (k, Tag (fst u') (snd u') (T.unpack v)) : tagsToTags dct kvs
 			where u' = toInts u
+
+toSigned :: E -> Signed.E
+toSigned e = Signed.E {
+	Signed.idnt = hexStrToBs $ idnt e,
+	Signed.pubkey = fromJust . parse_point . hexStrToBs $ pubkey e,
+	Signed.created_at = intToUnixTime $ created_at e,
+	Signed.kind = kind e,
+	Signed.tags = EvJsn.decodeTags . fromJust . A.decode . LBSC.pack $ tags e,
+	Signed.content = T.pack $ content e,
+	Signed.sig = hexStrToBs $ sig e,
+	Signed.verified = verified e }
 
 insert :: SQLite -> E -> IO (Result, String)
 insert db ev = withPrepared db (insertCommand Mini.columns) \sm ->
