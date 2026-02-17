@@ -2,6 +2,7 @@
 
 module Event.NG.Mini.Database.Type where
 
+import Data.Int
 import Data.UUIDv7
 
 data E = E {
@@ -9,9 +10,12 @@ data E = E {
 	pubkey :: String,
 	created_at :: Int,
 	kind :: Int,
-	a :: UUIDv7,
-	b :: UUIDv7,
-	c :: UUIDv7,
+	ah :: Int64,
+	al :: Int64,
+	bh :: Int64,
+	bl :: Int64,
+	ch :: Int64,
+	cl :: Int64,
 	tags :: String,
 	content :: String,
 	sig :: String,
@@ -19,6 +23,7 @@ data E = E {
 	deriving Show
 
 data Tag = Tag {
-	tagKey :: UUIDv7,
+	uuidH :: Int64,
+	uuidL :: Int64,
 	tagValue :: String }
 	deriving Show

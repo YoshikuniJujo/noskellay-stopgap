@@ -6,7 +6,7 @@
 module Event.Database.TH (
 
 	baz,
-	insertCommand, mkInsert,
+	insertCommand, insertCommand', mkInsert,
 	mkSelectAll, mkSelectAll1,
 
 	columns
@@ -59,6 +59,11 @@ foo e' (k', k'') = (mkName k' ,)
 	<$> varE 'eventToTag `appE` varE e' `appE` litE (StringL k'')
 
 insertCommand clmns = "INSERT INTO events VALUES(" ++
+	L.intercalate ", "
+		((: "") <$> replicate (length clmns) '?') ++
+	")"
+
+insertCommand' tnm clmns = "INSERT INTO " ++ tnm ++ " VALUES(" ++
 	L.intercalate ", "
 		((: "") <$> replicate (length clmns) '?') ++
 	")"

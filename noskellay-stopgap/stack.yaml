@@ -41,13 +41,13 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 
 extra-deps:
-  - simplest-sqlite-0.1.0.5
+  - simplest-sqlite-0.1.0.8
   - ppad-secp256k1-0.5.3
   - ppad-fixed-0.1.3
   - ppad-hmac-drbg-0.2.1
   - ppad-sha256-0.3.1
   - git: https://github.com/YoshikuniJujo/test_haskell
-    commit: 4da92fb1d7ad5fff71b9c735b46ac7b172838300
+    commit: f05299c7d0cb1267d9dac91b81a6dbd921892958
     subdirs:
     - themes/sns/nostr/try-nostr-event
     - themes/sns/nostr/try-nostr-event-ng
