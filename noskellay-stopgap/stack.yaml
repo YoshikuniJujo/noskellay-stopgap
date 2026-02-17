@@ -47,7 +47,7 @@ extra-deps:
   - ppad-hmac-drbg-0.2.1
   - ppad-sha256-0.3.1
   - git: https://github.com/YoshikuniJujo/test_haskell
-    commit: f05299c7d0cb1267d9dac91b81a6dbd921892958
+    commit: d0d17b7410ca1dcbc954ba24e5d8dc66629100bc
     subdirs:
     - themes/sns/nostr/try-nostr-event
     - themes/sns/nostr/try-nostr-event-ng

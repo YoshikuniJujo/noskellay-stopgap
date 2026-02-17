@@ -31,7 +31,7 @@ sample fp = do
 	ut <- getUnixTime
 	pure Event.E {
 		Event.pubkey = pk,
-		Event.created_at = ut,
+		Event.created_at = ut { utMicroSeconds = 0 },
 		Event.kind = 1,
 		Event.tags = [
 			("a", ("foo", ["bar", "baz"])),
