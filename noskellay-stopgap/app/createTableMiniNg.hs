@@ -11,9 +11,12 @@ main = do
 	(print =<<) . withSQLite "foo_mini_ng.sqlite3" $ \db -> do
 		withPrepared db (
 			"CREATE TABLE events(" ++
-			"id PRIMARY KEY, pubkey, created_at, kind, " ++
+			"uuid_v7_high, uuid_v7_low, " ++
+			"id, pubkey, created_at, kind, " ++
 			concat (concat $ zipWith (\a b -> [a, b]) foo bar) ++
-			"tags, content, sig, verified)" ) step
+			"tags, content, sig, verified, " ++
+			"PRIMARY KEY(uuid_v7_high, uuid_v7_low))"
+			) step
 		withPrepared db """
 			CREATE TABLE tags_a(uuid_h, uuid_l, value)
 			""" step

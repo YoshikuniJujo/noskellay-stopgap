@@ -5,9 +5,10 @@ module Event.NG.Mini.Database.Type where
 
 import Data.Int
 import Data.ByteString qualified as BS
-import Data.UUIDv7
 
 data E = E {
+	uuidV7High :: Int64,
+	uuidV7Low :: Int64,
 	idnt :: BS.ByteString,
 	pubkey :: BS.ByteString,
 	created_at :: Int,

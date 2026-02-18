@@ -26,18 +26,23 @@ import Event.Database.Tools
 fromSigned :: Signed.E -> IO (E, [(T.Text, Tag)])
 fromSigned e = do
 	dct <- genId
-	pure (fromSignedE dct e, tagsToTags dct $ Signed.tags e)
+	e' <- fromSignedE dct e
+	pure (e', tagsToTags dct $ Signed.tags e)
 
 genId :: IO (Map.Map T.Text UUIDv7)
 genId = Map.fromList
 	<$> zipWith ((,) . (T.:< "")) "abc" <$> replicateM 3 nextUUIDv7
 
-fromSignedE :: Map.Map T.Text UUIDv7 -> Signed.E -> E
-fromSignedE dct e = let
-	ua = toInts $ dct Map.! "a"
-	ub = toInts $ dct Map.! "b"
-	uc = toInts $ dct Map.! "c" in
-	E {	idnt = Signed.idnt e,
+fromSignedE :: Map.Map T.Text UUIDv7 -> Signed.E -> IO E
+fromSignedE dct e = do
+	(uh, ul) <- toInts <$> nextUUIDv7
+	let	ua = toInts $ dct Map.! "a"
+		ub = toInts $ dct Map.! "b"
+		uc = toInts $ dct Map.! "c"
+	pure E {
+		uuidV7High = uh,
+		uuidV7Low = ul,
+		idnt = Signed.idnt e,
 		pubkey = BS.tail . serialize_point $ Signed.pubkey e,
 		created_at = unixTimeToInt $ Signed.created_at e,
 		kind = Signed.kind e,
