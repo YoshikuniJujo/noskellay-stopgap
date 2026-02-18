@@ -13,6 +13,8 @@ import Codec.Binary.Bech32
 import "try-nostr-event-ng" Nostr.Event qualified as Event
 import "try-nostr-event-ng" Nostr.Event.Signed qualified as Signed
 
+import Filter
+
 getSample :: FilePath -> FilePath -> IO Signed.E
 getSample scfp pbfp = do
 	Just sc <- Event.secretFromBech32 . chomp <$> T.readFile scfp
