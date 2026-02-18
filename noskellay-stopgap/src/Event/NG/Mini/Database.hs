@@ -22,7 +22,6 @@ import Event.NG.Mini.Database.Type
 import Event.NG.Mini.Database.TH qualified as Mini
 
 import Event.Database.Tools
-import Tools
 
 fromSigned :: Signed.E -> IO (E, [(T.Text, Tag)])
 fromSigned e = do
@@ -38,9 +37,8 @@ fromSignedE dct e = let
 	ua = toInts $ dct Map.! "a"
 	ub = toInts $ dct Map.! "b"
 	uc = toInts $ dct Map.! "c" in
-	E {	idnt = bsToHexStr $ Signed.idnt e,
-		pubkey = bsToHexStr
-			. BS.tail . serialize_point $ Signed.pubkey e,
+	E {	idnt = Signed.idnt e,
+		pubkey = BS.tail . serialize_point $ Signed.pubkey e,
 		created_at = unixTimeToInt $ Signed.created_at e,
 		kind = Signed.kind e,
 		ah = fst ua, al = snd ua,
@@ -49,7 +47,7 @@ fromSignedE dct e = let
 		tags = LBSC.unpack
 			. A.encode . EvJsn.encodeTags $ Signed.tags e,
 		content = T.unpack $ Signed.content e,
-		sig = bsToHexStr $ Signed.sig e,
+		sig = Signed.sig e,
 		verified = Signed.verified e }
 
 tagsToTags :: Map.Map T.Text UUIDv7 -> [(T.Text, (T.Text, [T.Text]))] -> [(T.Text, Tag)]
@@ -62,13 +60,13 @@ tagsToTags dct = \case
 
 toSigned :: E -> Signed.E
 toSigned e = Signed.E {
-	Signed.idnt = hexStrToBs $ idnt e,
-	Signed.pubkey = fromJust . parse_point . hexStrToBs $ pubkey e,
+	Signed.idnt = idnt e,
+	Signed.pubkey = fromJust . parse_point $ pubkey e,
 	Signed.created_at = intToUnixTime $ created_at e,
 	Signed.kind = kind e,
 	Signed.tags = EvJsn.decodeTags . fromJust . A.decode . LBSC.pack $ tags e,
 	Signed.content = T.pack $ content e,
-	Signed.sig = hexStrToBs $ sig e,
+	Signed.sig = sig e,
 	Signed.verified = verified e }
 
 insert :: SQLite -> E -> IO (Result, String)
