@@ -39,7 +39,7 @@ library
       Event.NG.Mini.Database.Type
       Filter
       Lib
-      Nostr.Filter
+      Nostr.Database.Filter
       Samples
       SamplesNG
       Tools

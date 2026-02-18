@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Nostr.Filter where
+module Nostr.Database.Filter where
 
 import Prelude hiding (until)
 import Foreign.C.Types
@@ -12,28 +12,20 @@ import Data.UnixTime
 import Crypto.Curve.Secp256k1
 
 import "try-nostr-event-ng" Nostr.Event.Signed qualified as Signed
+import "try-nostr-event-ng" Nostr.Filter qualified as Filter
 
 import Filter qualified as F
 
-data Filter = Filter {
-	ids :: Maybe [BS.ByteString],
-	authors :: Maybe [Pub],
-	kinds :: Maybe [Int],
-	tags :: [(Char, [T.Text])],
-	since :: Maybe UnixTime, until :: Maybe UnixTime,
-	limit :: Maybe Int }
-	deriving Show
-
-filterToFilter :: Filter -> F.Filter e Sel
+filterToFilter :: Filter.Filter -> F.Filter e Sel
 filterToFilter f =
-	maybe F.Always (foldr (F.Or . idToFilter) F.Never) (ids f) `F.And`
-	maybe F.Always (foldr (F.Or . authorToFilter) F.Never) (authors f) `F.And`
-	maybe F.Always (foldr (F.Or . kindToFilter) F.Never) (kinds f) `F.And`
-	maybe F.Always (foldr (F.Or . tagToFilter 'a') F.Never) (lookup 'a' $ tags f) `F.And`
-	maybe F.Always (foldr (F.Or . tagToFilter 'b') F.Never) (lookup 'b' $ tags f) `F.And`
-	maybe F.Always (foldr (F.Or . tagToFilter 'c') F.Never) (lookup 'c' $ tags f) `F.And`
-	maybe F.Always sinceToFilter (since f) `F.And`
-	maybe F.Always sinceToFilter (until f)
+	maybe F.Always (foldr (F.Or . idToFilter) F.Never) (Filter.ids f) `F.And`
+	maybe F.Always (foldr (F.Or . authorToFilter) F.Never) (Filter.authors f) `F.And`
+	maybe F.Always (foldr (F.Or . kindToFilter) F.Never) (Filter.kinds f) `F.And`
+	maybe F.Always (foldr (F.Or . tagToFilter 'a') F.Never) (lookup 'a' $ Filter.tags f) `F.And`
+	maybe F.Always (foldr (F.Or . tagToFilter 'b') F.Never) (lookup 'b' $ Filter.tags f) `F.And`
+	maybe F.Always (foldr (F.Or . tagToFilter 'c') F.Never) (lookup 'c' $ Filter.tags f) `F.And`
+	maybe F.Always sinceToFilter (Filter.since f) `F.And`
+	maybe F.Always sinceToFilter (Filter.until f)
 
 data Sel = Id | Author | Kind | Tag Char | CreatedAt deriving Show
 
