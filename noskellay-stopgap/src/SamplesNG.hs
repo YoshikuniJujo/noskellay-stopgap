@@ -19,7 +19,7 @@ import Crypto.Curve.Secp256k1
 
 getSample :: FilePath -> FilePath -> IO Signed.E
 getSample scfp pbfp = do
-	Just sc <- Event.secretFromBech32 . chomp <$> T.readFile scfp
+	Right sc <- Event.secretFromBech32 . chomp <$> T.readFile scfp
 	Signed.signature sc =<< sample pbfp
 
 getSampleTags :: FilePath -> FilePath -> IO [(T.Text, (T.Text, [T.Text]))]
