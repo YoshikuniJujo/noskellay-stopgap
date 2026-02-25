@@ -80,7 +80,7 @@ packages:
     subdir: themes/uuid/try-uuid-v7-gen
 snapshots:
 - completed:
-    sha256: 41cc354b2fc81c6b039b4e581ff9dbae07fda94b0361ca08f3df5637da799856
-    size: 721525
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2026/2/10.yaml
-  original: nightly-2026-02-10
+    sha256: 1a5bce7768bd8bcfe1863ab0dc461b1aa61e5eb7d9ccd647407c0164cead4f95
+    size: 723455
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2026/2/24.yaml
+  original: nightly-2026-02-24
