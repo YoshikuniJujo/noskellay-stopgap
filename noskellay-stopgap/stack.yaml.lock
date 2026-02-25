@@ -40,7 +40,7 @@ packages:
   original:
     hackage: ppad-sha256-0.3.1
 - completed:
-    commit: 3c09665eed9518183d11ebfd764cc593afd4eebc
+    commit: 74f01316b1a805935145591c2223ecf9bace9ffb
     git: https://github.com/YoshikuniJujo/test_haskell
     name: try-nostr-event
     pantry-tree:
@@ -49,24 +49,24 @@ packages:
     subdir: themes/sns/nostr/try-nostr-event
     version: 0.1.0.0
   original:
-    commit: 3c09665eed9518183d11ebfd764cc593afd4eebc
+    commit: 74f01316b1a805935145591c2223ecf9bace9ffb
     git: https://github.com/YoshikuniJujo/test_haskell
     subdir: themes/sns/nostr/try-nostr-event
 - completed:
-    commit: 3c09665eed9518183d11ebfd764cc593afd4eebc
+    commit: 74f01316b1a805935145591c2223ecf9bace9ffb
     git: https://github.com/YoshikuniJujo/test_haskell
     name: try-nostr-event-ng
     pantry-tree:
-      sha256: 30da781a1289ac8da898e23689cc597977581e5285b2b2d602cdc49d38418cfe
-      size: 973
+      sha256: 62ee417b69abdc8574eeff2f80a18da3fca1bf212034839879d0baf3af304648
+      size: 1099
     subdir: themes/sns/nostr/try-nostr-event-ng
     version: 0.1.0.0
   original:
-    commit: 3c09665eed9518183d11ebfd764cc593afd4eebc
+    commit: 74f01316b1a805935145591c2223ecf9bace9ffb
     git: https://github.com/YoshikuniJujo/test_haskell
     subdir: themes/sns/nostr/try-nostr-event-ng
 - completed:
-    commit: 3c09665eed9518183d11ebfd764cc593afd4eebc
+    commit: 74f01316b1a805935145591c2223ecf9bace9ffb
     git: https://github.com/YoshikuniJujo/test_haskell
     name: try-uuid-v7-gen
     pantry-tree:
@@ -75,7 +75,7 @@ packages:
     subdir: themes/uuid/try-uuid-v7-gen
     version: 0.1.0.0
   original:
-    commit: 3c09665eed9518183d11ebfd764cc593afd4eebc
+    commit: 74f01316b1a805935145591c2223ecf9bace9ffb
     git: https://github.com/YoshikuniJujo/test_haskell
     subdir: themes/uuid/try-uuid-v7-gen
 snapshots:

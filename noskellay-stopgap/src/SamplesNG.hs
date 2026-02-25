@@ -15,6 +15,8 @@ import "try-nostr-event-ng" Nostr.Event.Signed qualified as Signed
 
 import Filter
 
+import Crypto.Curve.Secp256k1
+
 getSample :: FilePath -> FilePath -> IO Signed.E
 getSample scfp pbfp = do
 	Just sc <- Event.secretFromBech32 . chomp <$> T.readFile scfp
@@ -29,7 +31,7 @@ chomp t = if T.last t == '\n' then T.init t else t
 sample :: FilePath -> IO Event.E
 sample fp = do
 	Just pub <- dataPart . chomp <$> T.readFile fp
-	Just pk <- pure $ Event.parse_point pub
+	Just pk <- pure $ parse_point pub
 	ut <- getUnixTime
 	pure Event.E {
 		Event.pubkey = pk,
