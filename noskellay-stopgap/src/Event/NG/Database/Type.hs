@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Event.NG.Database.Type (E(..), Tag(..)) where
+module Event.NG.Database.Type (E(..)) where
 
 import Language.Haskell.TH
 import Data.Int
@@ -32,9 +32,3 @@ import ToolsTH
 			$ bangType noUnpackedNoStrict (conT ''Bool)
 		])
 	] [derivClause Nothing [conT ''Show]]
-
-data Tag = Tag {
-	uuidH :: Int64,
-	uuidL :: Int64,
-	tagValue :: String }
-	deriving Show

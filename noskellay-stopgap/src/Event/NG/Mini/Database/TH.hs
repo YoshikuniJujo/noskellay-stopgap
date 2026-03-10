@@ -6,6 +6,7 @@ module Event.NG.Mini.Database.TH where
 
 import Language.Haskell.TH
 import Event.NG.Mini.Database.Type qualified as T
+import Event.NG.Database.Common qualified as TC
 
 columns :: [Name]
 columns = beforeAToZ ++
@@ -15,7 +16,7 @@ hl :: String -> [String]
 hl c = [c ++ "h", c ++ "l"]
 
 columnsTag :: [Name]
-columnsTag = ['T.uuidH, 'T.uuidL, 'T.tagValue]
+columnsTag = ['TC.uuidH, 'TC.uuidL, 'TC.tagValue]
 
 beforeAToZ, afterAToZ :: [Name]
 beforeAToZ = [

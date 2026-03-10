@@ -23,6 +23,8 @@ import Event.NG.Mini.Database.TH qualified as Mini
 
 import Event.Database.Tools
 
+import Event.NG.Database.Common
+
 fromSigned :: Signed.E -> IO (E, [(T.Text, Tag)])
 fromSigned e = do
 	dct <- genId
@@ -54,14 +56,6 @@ fromSignedE dct e = do
 		content = T.unpack $ Signed.content e,
 		sig = Signed.sig e,
 		verified = Signed.verified e }
-
-tagsToTags :: Map.Map T.Text UUIDv7 -> [(T.Text, (T.Text, [T.Text]))] -> [(T.Text, Tag)]
-tagsToTags dct = \case
-	[] -> []
-	(k, (v, _)) : kvs -> case dct Map.!? k of
-		Nothing -> tagsToTags dct kvs
-		Just u -> (k, Tag (fst u') (snd u') (T.unpack v)) : tagsToTags dct kvs
-			where u' = toInts u
 
 toSigned :: E -> Signed.E
 toSigned e = Signed.E {

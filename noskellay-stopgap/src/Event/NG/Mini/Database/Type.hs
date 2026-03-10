@@ -24,9 +24,3 @@ data E = E {
 	sig :: BS.ByteString,
 	verified :: Bool }
 	deriving Show
-
-data Tag = Tag {
-	uuidH :: Int64,
-	uuidL :: Int64,
-	tagValue :: String }
-	deriving Show
