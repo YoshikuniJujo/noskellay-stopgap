@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module ToolsTH (noUnpackedNoStrict, mkStringField) where
+module ToolsTH (noUnpackedNoStrict, mkStringField, hl) where
 
 import Language.Haskell.TH
 
@@ -11,3 +11,6 @@ noUnpackedNoStrict = bang noSourceUnpackedness noSourceStrictness
 mkStringField :: Quote m => String -> m VarBangType
 mkStringField nm = varBangType (mkName nm)
 	. bangType noUnpackedNoStrict $ (conT ''Maybe) `appT` (conT ''String)
+
+hl :: String -> [String]
+hl c = [c ++ "h", c ++ "l"]

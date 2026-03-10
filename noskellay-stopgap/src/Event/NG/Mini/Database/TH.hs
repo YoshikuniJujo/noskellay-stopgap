@@ -9,7 +9,10 @@ import Event.NG.Mini.Database.Type qualified as T
 
 columns :: [Name]
 columns = beforeAToZ ++
-	(mkName <$> ["ah", "al", "bh", "bl", "ch", "cl"]) ++ afterAToZ
+	(mkName <$> (hl =<< (: "") <$> "abc")) ++ afterAToZ
+
+hl :: String -> [String]
+hl c = [c ++ "h", c ++ "l"]
 
 columnsTag :: [Name]
 columnsTag = ['T.uuidH, 'T.uuidL, 'T.tagValue]
