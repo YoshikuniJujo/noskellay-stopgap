@@ -17,15 +17,10 @@ main = do
 			"tags, content, sig, verified, " ++
 			"PRIMARY KEY(uuid_v7_high, uuid_v7_low))"
 			) step
-		withPrepared db """
-			CREATE TABLE tags_a(uuid_h, uuid_l, value)
-			""" step
-		withPrepared db """
-			CREATE TABLE tags_b(uuid_h, uuid_l, value)
-			""" step
-		withPrepared db """
-			CREATE TABLE tags_c(uuid_h, uuid_l, value)
-			""" step
+		(\c -> withPrepared db (createTableTags c) step) `mapM_` "abc"
+
+createTableTags :: Char -> String
+createTableTags c = "CREATE TABLE tags_" ++ [c] ++ "(uuid_h, uuid_l, value)"
 
 foo = ('"' :) . (: "_h\", ") <$> ['a' .. 'c']
 bar = ('"' :) . (: "_l\", ") <$> ['a' .. 'c']
