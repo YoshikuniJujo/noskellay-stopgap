@@ -44,6 +44,7 @@ library
       Event.NG.Mini.Database.Abc
       Event.NG.Mini.Database.TH
       Event.NG.Mini.Database.Type
+      Event.NG.Mini.Database.Type.TH
       Filter
       Lib
       Nostr.Database.Filter

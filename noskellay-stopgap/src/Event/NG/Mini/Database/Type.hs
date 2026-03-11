@@ -1,26 +1,10 @@
 {-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
 module Event.NG.Mini.Database.Type where
 
-import Data.Int
-import Data.ByteString qualified as BS
+import Event.NG.Mini.Database.Abc
+import Event.NG.Mini.Database.Type.TH
 
-data E = E {
-	uuidV7High :: Int64,
-	uuidV7Low :: Int64,
-	idnt :: BS.ByteString,
-	pubkey :: BS.ByteString,
-	created_at :: Int,
-	kind :: Int,
-	ah :: Int64,
-	al :: Int64,
-	bh :: Int64,
-	bl :: Int64,
-	ch :: Int64,
-	cl :: Int64,
-	tags :: String,
-	content :: String,
-	sig :: BS.ByteString,
-	verified :: Bool }
-	deriving Show
+(: []) <$> mkDataE abc

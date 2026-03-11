@@ -18,11 +18,11 @@ main = do
 			"tags, content, sig, verified, " ++
 			"PRIMARY KEY(uuid_v7_high, uuid_v7_low))"
 			) step
-		(\c -> withPrepared db (createTableTags c) step) `mapM_` abc
+		(\c -> withPrepared db (createTableTags c) step) `mapM_` fromAbc' abc
 
-createTableTags :: Char -> String
-createTableTags c = "CREATE TABLE tags_" ++ [c] ++ "(uuid_h, uuid_l, value)"
+createTableTags :: String -> String
+createTableTags c = "CREATE TABLE tags_" ++ c ++ "(uuid_h, uuid_l, value)"
 
 foo, bar :: [String]
-foo = ('"' :) . (: "_h\", ") <$> abc
-bar = ('"' :) . (: "_l\", ") <$> abc
+foo = ('"' :) . (++ "_h\", ") <$> fromAbc' abc
+bar = ('"' :) . (++ "_l\", ") <$> fromAbc' abc

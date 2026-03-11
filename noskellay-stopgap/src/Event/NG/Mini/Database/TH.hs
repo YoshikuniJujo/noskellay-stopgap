@@ -24,13 +24,7 @@ import Event.NG.Mini.Database.Abc
 
 columns :: [Name]
 columns = beforeAToZ ++
-	(mkName <$> (hl =<< fromAbc abc)) ++ afterAToZ
-
-fromAbc :: String -> [String]
-fromAbc = \case
-	"" -> []
-	c : cs	| isUpper c -> ('u' : [toLower c]) : fromAbc cs
-		| otherwise -> [c] : fromAbc cs
+	(mkName <$> (hl =<< fromAbc' abc)) ++ afterAToZ
 
 beforeAToZ, afterAToZ :: [Name]
 beforeAToZ = [
