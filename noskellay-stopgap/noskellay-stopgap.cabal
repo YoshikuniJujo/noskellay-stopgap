@@ -35,6 +35,9 @@ library
       Event.MiniNew.Database
       Event.MiniNew.Database.Type
       Event.NG.Database.Common
+      Event.NG.Database.Common.HL
+      Event.NG.Database.Common.Tag
+      Event.NG.Database.Common.TH
       Event.NG.Database.TH
       Event.NG.Database.Type
       Event.NG.Mini.Database

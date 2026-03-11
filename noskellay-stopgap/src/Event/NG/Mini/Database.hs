@@ -19,23 +19,24 @@ import "try-nostr-event-ng" Nostr.Event.Json qualified as EvJsn
 import Event.Database.TH
 import Event.NG.Mini.Database.Type
 import Event.NG.Mini.Database.TH qualified as Mini
+import Event.NG.Database.Common.TH qualified as Common
 
 import Event.Database.Tools
 
 import Event.NG.Database.Common
+import Event.NG.Database.Common.Tag
 
 fromSigned :: Signed.E -> IO (E, [(T.Text, Tag)])
 fromSigned e = do
-	dct <- genId
+	dct <- genId ["a", "b", "c"]
 	e' <- fromSignedE dct e
 	pure (e', tagsToTags dct $ Signed.tags e)
 
-genId :: IO (Map.Map T.Text UUIDv7)
-genId = Map.fromList
-	<$> zipWith ((,) . (T.:< "")) "abc" <$> replicateM 3 nextUUIDv7
+genId :: [T.Text] -> IO (Map.Map T.Text UUIDv7)
+genId abc = Map.fromList <$> zipWith (,) abc <$> replicateM 3 nextUUIDv7
 
 fromSignedE :: Map.Map T.Text UUIDv7 -> Signed.E -> IO E
-fromSignedE dct e = $(Mini.mkFromSignedEEx ["a", "b", "c"] 'dct 'e)
+fromSignedE dct e = $(Common.mkFromSignedEEx' Mini.mkE ["a", "b", "c"] 'dct 'e)
 
 toSigned :: E -> Signed.E
 toSigned e = Signed.E {
@@ -54,8 +55,8 @@ insert db ev = withPrepared db (insertCommand Mini.columns) \sm ->
 
 insertTags :: SQLite -> T.Text -> Tag -> IO (Result, String)
 insertTags db nm tg =
-	withPrepared db (insertCommand' ("tags_" ++ T.unpack nm) Mini.columnsTag) \sm ->
-		$(mkInsert Mini.columnsTag 'sm 'tg)
+	withPrepared db (insertCommand' ("tags_" ++ T.unpack nm) columnsTag) \sm ->
+		$(mkInsert columnsTag 'sm 'tg)
 
 selectAll :: SQLite -> IO ([Signed.E], String)
 selectAll db = withPrepared db "SELECT * FROM events" \sm ->
