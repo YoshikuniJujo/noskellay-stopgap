@@ -8,6 +8,7 @@ module Event.NG.Mini.Database where
 import Control.Monad
 import Data.Maybe
 import Data.Map qualified as Map
+import Data.Char
 import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
 import Data.Aeson qualified as A
@@ -26,14 +27,22 @@ import Event.Database.Tools
 import Event.NG.Database.Common
 import Event.NG.Database.Common.Tag
 
+import Event.NG.Mini.Database.Abc
+
 fromSigned :: Signed.E -> IO (E, [(T.Text, Tag)])
 fromSigned e = do
-	dct <- genId ["a", "b", "c"]
+	dct <- genId $ fromAbc abc
 	e' <- fromSignedE dct e
 	pure (e', tagsToTags dct $ Signed.tags e)
 
+fromAbc :: String -> [T.Text]
+fromAbc [] = []
+fromAbc (c : cs)
+	| isUpper c = ("u" T.:> toLower c) : fromAbc cs
+	| otherwise = ("" T.:> c) : fromAbc cs
+
 genId :: [T.Text] -> IO (Map.Map T.Text UUIDv7)
-genId abc = Map.fromList <$> zipWith (,) abc <$> replicateM 3 nextUUIDv7
+genId a = Map.fromList <$> zipWith (,) a <$> replicateM 3 nextUUIDv7
 
 fromSignedE :: Map.Map T.Text UUIDv7 -> Signed.E -> IO E
 fromSignedE dct e = $(Common.mkFromSignedEEx' Mini.mkE ["a", "b", "c"] 'dct 'e)

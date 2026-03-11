@@ -12,6 +12,8 @@ import SamplesNG
 
 import "try-nostr-event-ng" Nostr.Event.Json qualified as EvJsn
 
+import Event.NG.Mini.Database.Abc
+
 main :: IO ()
 main = do
 	secfp : pubfp : _ <- getArgs
@@ -23,7 +25,7 @@ main = do
 	BSLC.putStrLn evjsn
 	putStrLn ""
 	ev' <- fromSigned evs
-	withSQLite "foo_mini_ng.sqlite3" $ \db -> do
+	withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
 		_ <- insert db (fst ev')
 		_ <- uncurry (insertTags db) `mapM` snd ev'
 		(r, _) <- selectAll db
