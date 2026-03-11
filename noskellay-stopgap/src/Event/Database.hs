@@ -50,6 +50,7 @@ toSigned e = Signed.E {
 	Signed.sig = hexStrToBs $ sig e,
 	Signed.verified = verified e }
 
+insert :: SQLite -> E -> IO (Result, String)
 insert db ev = withPrepared db (insertCommand columns) \sm ->
 	$(mkInsert columns 'sm 'ev)
 

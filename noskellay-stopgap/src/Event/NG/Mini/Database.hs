@@ -8,7 +8,6 @@ module Event.NG.Mini.Database where
 import Control.Monad
 import Data.Maybe
 import Data.Map qualified as Map
-import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
 import Data.Aeson qualified as A
@@ -41,21 +40,7 @@ fromSignedE dct e = do
 	let	ua = toInts $ dct Map.! "a"
 		ub = toInts $ dct Map.! "b"
 		uc = toInts $ dct Map.! "c"
-	pure E {
-		uuidV7High = uh,
-		uuidV7Low = ul,
-		idnt = Signed.idnt e,
-		pubkey = BS.tail . serialize_point $ Signed.pubkey e,
-		created_at = unixTimeToInt $ Signed.created_at e,
-		kind = Signed.kind e,
-		ah = fst ua, al = snd ua,
-		bh = fst ub, bl = snd ub,
-		ch = fst uc, cl = snd uc,
-		tags = LBSC.unpack
-			. A.encode . EvJsn.encodeTags $ Signed.tags e,
-		content = T.unpack $ Signed.content e,
-		sig = Signed.sig e,
-		verified = Signed.verified e }
+	pure $(Mini.mkE 'uh 'ul 'e ['ua, 'ub, 'uc])
 
 toSigned :: E -> Signed.E
 toSigned e = Signed.E {
