@@ -35,12 +35,7 @@ genId = Map.fromList
 	<$> zipWith ((,) . (T.:< "")) "abc" <$> replicateM 3 nextUUIDv7
 
 fromSignedE :: Map.Map T.Text UUIDv7 -> Signed.E -> IO E
-fromSignedE dct e = do
-	(uh, ul) <- toInts <$> nextUUIDv7
-	let	ua = toInts $ dct Map.! "a"
-		ub = toInts $ dct Map.! "b"
-		uc = toInts $ dct Map.! "c"
-	pure $(Mini.mkE 'uh 'ul 'e ['ua, 'ub, 'uc])
+fromSignedE dct e = $(Mini.mkFromSignedEEx ["a", "b", "c"] 'dct 'e)
 
 toSigned :: E -> Signed.E
 toSigned e = Signed.E {

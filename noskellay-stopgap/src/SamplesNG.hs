@@ -43,7 +43,7 @@ sample fp = do
 			("A", ("bar", ["baz", "hoge"])),
 			("a", ("oreore", ["oreda", "oreoda"]))
 			],
-		Event.content = "Hello" }
+		Event.content = "Hello, world! Hello, Yoshikuni!" }
 
 dataPart :: T.Text -> Maybe BS.ByteString
 dataPart b = case decode b of
