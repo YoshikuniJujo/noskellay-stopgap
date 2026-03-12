@@ -25,6 +25,7 @@ import Event.Database.Tools
 
 import Event.NG.Database.Common
 import Event.NG.Database.Common.Tag
+import Event.NG.Database.Common.Abc
 
 import Event.NG.Mini.Database.Abc
 

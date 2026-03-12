@@ -5,6 +5,6 @@
 module Event.NG.Mini.Database.Type where
 
 import Event.NG.Mini.Database.Abc
-import Event.NG.Mini.Database.Type.TH
+import Event.NG.Database.Common.Type.TH
 
 (: []) <$> mkDataE abc

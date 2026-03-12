@@ -6,7 +6,6 @@
 module Event.NG.Mini.Database.TH (mkE, columns) where
 
 import Language.Haskell.TH
-import Data.Char
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy.Char8 qualified as LBSC
 import Data.Text qualified as T
@@ -19,6 +18,7 @@ import "try-nostr-event-ng" Nostr.Event.Json qualified as EvJsn
 
 import Event.Database.Tools
 import Event.NG.Database.Common.HL
+import Event.NG.Database.Common.Abc
 
 import Event.NG.Mini.Database.Abc
 

@@ -4,6 +4,7 @@
 module Main (main) where
 
 import Database.SmplstSQLite3
+import Event.NG.Database.Common.Abc
 import Event.NG.Mini.Database.Abc
 
 main :: IO ()

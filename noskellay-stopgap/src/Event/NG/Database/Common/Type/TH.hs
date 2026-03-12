@@ -3,7 +3,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Event.NG.Mini.Database.Type.TH where
+module Event.NG.Database.Common.Type.TH where
 
 import Data.Int
 import Data.Char
