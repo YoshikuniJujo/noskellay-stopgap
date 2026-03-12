@@ -41,7 +41,6 @@ library
       Event.NG.Database.Common.Tag
       Event.NG.Database.Common.TH
       Event.NG.Database.Common.Type.TH
-      Event.NG.Database.TH
       Event.NG.Database.Type
       Event.NG.Mini.Database
       Event.NG.Mini.Database.Abc
