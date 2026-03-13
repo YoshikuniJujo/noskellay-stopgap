@@ -11,6 +11,7 @@ import Data.Text qualified as T
 import Data.UnixTime
 import Crypto.Curve.Secp256k1
 
+import "try-nostr-event-ng" Nostr.Event qualified as Event
 import "try-nostr-event-ng" Nostr.Event.Signed qualified as Signed
 import "try-nostr-event-ng" Nostr.Filter qualified as Filter
 
@@ -35,6 +36,13 @@ sel Author = F.Blob . BS.tail . serialize_point . Signed.pubkey
 sel Kind = F.Integer . fromIntegral . Signed.kind
 sel (Tag t) = F.MultiText . (fst <$>) . lookupAll (T.pack [t]) . Signed.tags
 sel CreatedAt = F.Integer . (\(UnixTime (CTime t) _) -> t) . Signed.created_at
+
+sel' :: Sel -> Event.E -> F.Value
+sel' Id = F.Blob . Event.hash
+sel' Author = F.Blob . BS.tail . serialize_point . Event.pubkey
+sel' Kind = F.Integer . fromIntegral . Event.kind
+sel' (Tag t) = F.MultiText . (fst <$>) . lookupAll (T.pack [t]) . Event.tags
+sel' CreatedAt = F.Integer . (\(UnixTime (CTime t) _) -> t) . Event.created_at
 
 lookupAll :: Eq a => a -> [(a, b)] -> [b]
 lookupAll a0 = \case
