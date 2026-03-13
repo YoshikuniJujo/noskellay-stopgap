@@ -34,6 +34,7 @@ library
       Event.Mini.Database.Type
       Event.MiniNew.Database
       Event.MiniNew.Database.Type
+      Event.NG.Database
       Event.NG.Database.Abc
       Event.NG.Database.Common
       Event.NG.Database.Common.Abc
@@ -41,6 +42,7 @@ library
       Event.NG.Database.Common.Tag
       Event.NG.Database.Common.TH
       Event.NG.Database.Common.Type.TH
+      Event.NG.Database.TH
       Event.NG.Database.Type
       Event.NG.Mini.Database
       Event.NG.Mini.Database.Abc
@@ -174,6 +176,30 @@ executable createTableMiniNg
     , websockets
   default-language: Haskell2010
 
+executable createTableNg
+  main-is: createTableNg.hs
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bech32
+    , bytestring
+    , containers
+    , noskellay-stopgap
+    , ppad-secp256k1
+    , simplest-sqlite
+    , template-haskell
+    , text
+    , try-nostr-event
+    , try-nostr-event-ng
+    , try-uuid-v7-gen
+    , unix-time
+    , uuid
+    , websockets
+  default-language: Haskell2010
+
 executable noskellay-stopgap-exe
   main-is: Main.hs
   other-modules:
@@ -228,6 +254,30 @@ executable tryDatabase
 
 executable tryDatabaseMini
   main-is: tryDatabaseMini.hs
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bech32
+    , bytestring
+    , containers
+    , noskellay-stopgap
+    , ppad-secp256k1
+    , simplest-sqlite
+    , template-haskell
+    , text
+    , try-nostr-event
+    , try-nostr-event-ng
+    , try-uuid-v7-gen
+    , unix-time
+    , uuid
+    , websockets
+  default-language: Haskell2010
+
+executable tryDatabaseNg
+  main-is: tryDatabaseNg.hs
   hs-source-dirs:
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N

@@ -4,8 +4,5 @@
 
 module Event.NG.Database.Abc (abc) where
 
-import Data.Char
-import Data.Text qualified as T
-
 abc :: String
-abc = "abcdABCD"
+abc = ['a' .. 'z'] ++ ['A' .. 'Z']
