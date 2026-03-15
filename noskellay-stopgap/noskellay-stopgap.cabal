@@ -55,6 +55,7 @@ library
       SamplesNG
       Tools
       ToolsTH
+      TrySQL
   other-modules:
       Paths_noskellay_stopgap
   autogen-modules:
@@ -69,6 +70,7 @@ library
     , bytestring
     , containers
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -93,6 +95,7 @@ executable createTable
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -117,6 +120,7 @@ executable createTableMini
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -141,6 +145,7 @@ executable createTableMiniNew
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -165,6 +170,7 @@ executable createTableMiniNg
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -189,6 +195,7 @@ executable createTableNg
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -217,6 +224,7 @@ executable noskellay-stopgap-exe
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -241,6 +249,7 @@ executable noskellay-stopgap-ng
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -265,6 +274,7 @@ executable tryDatabase
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -289,6 +299,7 @@ executable tryDatabaseMini
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -313,6 +324,7 @@ executable tryDatabaseNg
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -337,6 +349,7 @@ executable tryDatabaseNgMini
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text
@@ -366,6 +379,7 @@ test-suite noskellay-stopgap-test
     , containers
     , noskellay-stopgap
     , ppad-secp256k1
+    , random
     , simplest-sqlite
     , template-haskell
     , text

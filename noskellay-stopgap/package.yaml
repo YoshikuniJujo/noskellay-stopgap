@@ -25,6 +25,7 @@ dependencies:
 - containers
 - bytestring
 - text
+- random
 - aeson
 - simplest-sqlite
 - ppad-secp256k1
