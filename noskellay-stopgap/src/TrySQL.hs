@@ -16,9 +16,9 @@ allEvents :: IO ([Signed.E], String)
 allEvents = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
 	selectAll db
 
-allEvents' :: IO ([Signed.E], String)
-allEvents' = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
-	selectAll' db
+allEvents' :: String -> IO ([Signed.E], String)
+allEvents' wh = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
+	selectAll' db wh
 
 randomEventId :: IO BS.ByteString
 randomEventId = do

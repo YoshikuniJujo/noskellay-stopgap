@@ -48,8 +48,8 @@ selectAll :: SQLite -> IO ([Signed.E], String)
 selectAll db = withPrepared db "SELECT * FROM events" \sm ->
 	$(mkSelectAll TH.columns 'sm 'E 'toSigned)
 
-selectAll' :: SQLite -> IO ([Signed.E], String)
-selectAll' db = withPrepared db ("SELECT * FROM events" ++ leftJoins abc) \sm ->
+selectAll' :: SQLite -> String -> IO ([Signed.E], String)
+selectAll' db wh = withPrepared db ("SELECT * FROM events" ++ leftJoins abc ++ " where " ++ wh) \sm ->
 	$(mkSelectAll TH.columns 'sm 'E 'toSigned)
 
 count :: SQLite -> IO (Int, String)
