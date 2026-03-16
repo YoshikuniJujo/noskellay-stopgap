@@ -16,6 +16,10 @@ allEvents :: IO ([Signed.E], String)
 allEvents = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
 	selectAll db
 
+allEvents' :: IO ([Signed.E], String)
+allEvents' = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
+	selectAll' db
+
 randomEventId :: IO BS.ByteString
 randomEventId = do
 	(ids, _) <- first (Signed.idnt <$>) <$> allEvents

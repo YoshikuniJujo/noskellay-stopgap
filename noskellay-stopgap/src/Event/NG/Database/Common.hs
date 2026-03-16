@@ -27,3 +27,30 @@ data Tag = Tag {
 	uuidL :: Int64,
 	tagValue :: String }
 	deriving Show
+
+toTableName :: Char -> String
+toTableName c
+	| isUpper c = "tags_u" ++ [toLower c]
+	| isLower c = "tags_" ++ [c]
+	| otherwise = error "bad"
+
+toColumnNameH, toColumnNameL :: Char -> String
+toColumnNameH c
+	| isUpper c = "events.u" ++ [toLower c] ++ "_h"
+	| isLower c = "events." ++ [c] ++ "_h"
+	| otherwise = error "bad"
+toColumnNameL c
+	| isUpper c = "events.u" ++ [toLower c] ++ "_l"
+	| isLower c = "events." ++ [c] ++ "_l"
+	| otherwise = error "bad"
+
+leftJoin1 :: Char -> String
+leftJoin1 = (" LEFT JOIN " ++) . toTableName
+
+onTag :: Char -> String
+onTag c = " ON " ++
+	toColumnNameH c ++ " = " ++ toTableName c ++ ".uuid_h AND " ++
+	toColumnNameL c ++ " = " ++ toTableName c ++ ".uuid_l"
+
+leftJoins :: String -> String
+leftJoins = ((\c -> leftJoin1 c ++ onTag c) `concatMap`)

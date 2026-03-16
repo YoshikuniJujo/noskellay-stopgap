@@ -7,6 +7,7 @@ module Event.NG.Database where
 
 import Control.Monad
 import Data.Map qualified as Map
+import Data.Char
 import Data.Text qualified as T
 import Data.UUIDv7
 import Database.SmplstSQLite3
@@ -45,6 +46,10 @@ insertTags db nm tg =
 
 selectAll :: SQLite -> IO ([Signed.E], String)
 selectAll db = withPrepared db "SELECT * FROM events" \sm ->
+	$(mkSelectAll TH.columns 'sm 'E 'toSigned)
+
+selectAll' :: SQLite -> IO ([Signed.E], String)
+selectAll' db = withPrepared db ("SELECT * FROM events" ++ leftJoins abc) \sm ->
 	$(mkSelectAll TH.columns 'sm 'E 'toSigned)
 
 count :: SQLite -> IO (Int, String)

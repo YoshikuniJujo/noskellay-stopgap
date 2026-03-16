@@ -47,6 +47,10 @@ selectAll :: SQLite -> IO ([Signed.E], String)
 selectAll db = withPrepared db "SELECT * FROM events" \sm ->
 	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
 
+selectAll' :: SQLite -> IO ([Signed.E], String)
+selectAll' db = withPrepared db ("SELECT * FROM events" ++ leftJoins abc) \sm ->
+	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
+
 count :: SQLite -> IO (Int, String)
 count db = withPrepared db "SELECT COUNT(*) FROM events" \sm -> do
 	_ <- step sm
