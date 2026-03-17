@@ -41,6 +41,7 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 
 extra-deps:
+  - simplest-sqlite-0.1.1.1
   - git: https://github.com/YoshikuniJujo/test_haskell
     commit: bc1670a7587a1550f8444e7e238084f0e3fd0aaa
     subdirs:

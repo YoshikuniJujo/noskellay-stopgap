@@ -22,6 +22,8 @@ import Event.NG.Database.Common.Abc
 
 import Event.NG.Mini.Database.Abc
 
+import Nostr.Value
+
 fromSigned :: Signed.E -> IO (E, [(T.Text, Tag)])
 fromSigned e = do
 	dct <- genId $ fromAbc abc
@@ -47,8 +49,9 @@ selectAll :: SQLite -> IO ([Signed.E], String)
 selectAll db = withPrepared db "SELECT * FROM events" \sm ->
 	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
 
-selectAll' :: SQLite -> String -> IO ([Signed.E], String)
-selectAll' db wh = withPrepared db ("SELECT * FROM events" ++ leftJoins abc ++ " where " ++ wh) \sm ->
+selectAll' :: SQLite -> String -> [Value] -> IO ([Signed.E], String)
+selectAll' db wh vs = withPrepared db ("SELECT * FROM events" ++ leftJoins abc ++ " where " ++ wh) \sm -> do
+	zipWithM (bindN' sm) [1..] vs
 	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
 
 count :: SQLite -> IO (Int, String)

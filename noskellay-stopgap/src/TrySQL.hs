@@ -12,13 +12,18 @@ import "try-nostr-event-ng" Nostr.Event.Signed qualified as Signed
 import Event.NG.Mini.Database
 import Event.NG.Mini.Database.Abc
 
+import Nostr.Value
+
+import Nostr.Filter qualified as Filter
+import Nostr.Database.Filter
+
 allEvents :: IO ([Signed.E], String)
 allEvents = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
 	selectAll db
 
-allEvents' :: String -> IO ([Signed.E], String)
-allEvents' wh = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
-	selectAll' db wh
+allEvents' :: String -> [Value] -> IO ([Signed.E], String)
+allEvents' wh vs = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
+	selectAll' db wh vs
 
 randomEventId :: IO BS.ByteString
 randomEventId = do
@@ -33,3 +38,10 @@ selectEventWithId idnt = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db 
 		bindN sm 1 idnt
 		step sm
 		column sm 4
+
+filterEvents :: Filter.Filter -> IO ([Signed.E], String)
+filterEvents =
+	uncurry allEvents' . sqlWhere selToSql . filterToFilter
+
+showSqlWhere :: Filter.Filter -> (String, [Value])
+showSqlWhere = sqlWhere selToSql . filterToFilter

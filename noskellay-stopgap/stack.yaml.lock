@@ -5,6 +5,13 @@
 
 packages:
 - completed:
+    hackage: simplest-sqlite-0.1.1.1@sha256:72997afbb04c501a0e561b95403a4569ae7f250511e06e60a2288bfb8f105d06,1204
+    pantry-tree:
+      sha256: e9fa192603327af878e6e4d21ece8695c1c668899f264f92d34f7ba48d671157
+      size: 618
+  original:
+    hackage: simplest-sqlite-0.1.1.1
+- completed:
     commit: bc1670a7587a1550f8444e7e238084f0e3fd0aaa
     git: https://github.com/YoshikuniJujo/test_haskell
     name: try-nostr-event

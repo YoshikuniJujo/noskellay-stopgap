@@ -51,6 +51,7 @@ library
       Filter
       Lib
       Nostr.Database.Filter
+      Nostr.Value
       Samples
       SamplesNG
       Tools
