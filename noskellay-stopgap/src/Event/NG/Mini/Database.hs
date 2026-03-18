@@ -50,7 +50,10 @@ selectAll db = withPrepared db "SELECT * FROM events" \sm ->
 	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
 
 selectAll' :: SQLite -> String -> [Value] -> IO ([Signed.E], String)
-selectAll' db wh vs = withPrepared db ("SELECT * FROM events" ++ leftJoins abc ++ " where " ++ wh) \sm -> do
+selectAll' db wh vs =
+	withPrepared db ("SELECT * FROM events" ++
+		leftJoins abc ++ " where " ++
+		wh ++ " ORDER BY created_at DESC") \sm -> do
 	zipWithM (bindN' sm) [1..] vs
 	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
 
