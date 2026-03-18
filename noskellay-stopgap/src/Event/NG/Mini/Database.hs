@@ -57,6 +57,14 @@ selectAll' db wh vs =
 	zipWithM (bindN' sm) [1..] vs
 	$(mkSelectAll Mini.columns 'sm 'E 'toSigned)
 
+selectAll'' :: SQLite -> String -> [Value] -> Int -> IO ([Signed.E], String)
+selectAll'' db wh vs lmt =
+	withPrepared db ("SELECT * FROM events" ++
+		leftJoins abc ++ " where " ++
+		wh ++ " ORDER BY created_at DESC") \sm -> do
+	zipWithM (bindN' sm) [1..] vs
+	$(mkSelectAll' Mini.columns 'lmt 'sm 'E 'toSigned)
+
 count :: SQLite -> IO (Int, String)
 count db = withPrepared db "SELECT COUNT(*) FROM events" \sm -> do
 	_ <- step sm

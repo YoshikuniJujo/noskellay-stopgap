@@ -7,9 +7,11 @@ module Event.Database.TH (
 
 	baz,
 	insertCommand, insertCommand', mkInsert,
-	mkSelectAll, mkSelectAll1,
+	mkSelectAll, mkSelectAll', mkSelectAll1,
 
-	columns
+	columns,
+
+	mkStep
 
 	) where
 
@@ -117,9 +119,43 @@ mkSelectAll clmns sm le ts = do
 	(varE 'fix `appE`) . lamE [varP go] . doE $
 		bindS (varP r) (varE 'step `appE` varE sm) : [
 		noBindS $ caseE (varE r) [
-			match (conP 'Done []) (normalB
-				$ varE 'pure `appE` conE '[]) [],
-			match (conP 'Row []) (normalB . doE $
+			match (conP 'Done [])
+				(normalB $ varE 'pure `appE` conE '[]) [],
+			match (conP 'Row [])
+				(normalB $ mkStep clmns sm le ts vs go e) [],
+			match wildP
+				(normalB $
+					varE 'error `appE` litE (stringL "bad"))
+				[] ] ]
+
+mkSelectAll' :: Quote m => [Name] -> Name -> Name -> Name -> Name -> m Exp
+mkSelectAll' clmns lmt sm le ts = do
+	vs <- replicateM (length clmns) $ newName "x"
+	go <- newName "go"
+	r <- newName "r"
+	e <- newName "e"
+	n <- newName "n"
+	(infixE Nothing (varE '($)) (Just $ varE lmt) `appE`) $ (varE 'fix `appE`) . lamE [varP go, varP n] . doE $
+		bindS (varP r) (varE 'step `appE` varE sm) : [
+		noBindS $ caseE (varE r) [
+			match (conP 'Done [])
+				(normalB $ varE 'pure `appE` conE '[]) [],
+			match (conP 'Row [])
+				(guardedB [
+					(,)	<$> normalG (uInfixE
+							(varE n) (varE '(>)) (litE $ IntegerL 0))
+						<*> mkStep' clmns sm le ts vs go n e,
+					(,)	<$> normalG (varE 'otherwise)
+						<*> varE 'pure `appE` conE '[]
+					]) [],
+			match wildP
+				(normalB $
+					varE 'error `appE` litE (stringL "bad"))
+				[] ] ]
+
+mkStep :: Quote m =>
+	[Name] -> Name -> Name -> Name -> [Name] -> Name -> Name -> m Exp
+mkStep clmns sm le ts vs go e = doE $
 				zipWith (foo'' sm) vs [0 ..] ++ [
 				letS [
 					valD (varP e) (normalB (
@@ -133,13 +169,24 @@ mkSelectAll clmns sm le ts = do
 						Nothing)
 					(varE '(<$>))
 					(Just $ varE go)
-				]) [],
-			match wildP
-				(normalB $ varE 'error `appE` litE (stringL "bad"))
-				[]
-			]
---		zipWith (foo'' sm) vs [0 ..] ++ [
---		noBindS $ varE 'pure `appE` litE (integerL 123)
-		]
+				]
+
+mkStep' :: Quote m =>
+	[Name] -> Name -> Name -> Name -> [Name] -> Name -> Name -> Name -> m Exp
+mkStep' clmns sm le ts vs go n e = doE $
+				zipWith (foo'' sm) vs [0 ..] ++ [
+				letS [
+					valD (varP e) (normalB (
+						recConE le $ zipWith (\f v -> (f ,) <$> varE v) clmns vs
+						)) []
+					],
+				noBindS $ infixE
+					(Just $ infixE
+						(Just $ varE ts `appE` varE e)
+						(conE '(:))
+						Nothing)
+					(varE '(<$>))
+					(Just $ varE go `appE` uInfixE (varE n) (varE '(-)) (litE $ integerL 1))
+				]
 
 foo'' sm v n = bindS (varP v) $ varE 'column `appE` varE sm `appE` litE (integerL n)

@@ -5,6 +5,7 @@
 module TrySQL where
 
 import Control.Arrow
+import Data.Maybe
 import Data.ByteString qualified as BS
 import System.Random
 import Database.SmplstSQLite3
@@ -25,6 +26,10 @@ allEvents' :: String -> [Value] -> IO ([Signed.E], String)
 allEvents' wh vs = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
 	selectAll' db wh vs
 
+allEvents'' :: String -> [Value] -> Int -> IO ([Signed.E], String)
+allEvents'' wh vs lmt = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db -> do
+	selectAll'' db wh vs lmt
+
 randomEventId :: IO BS.ByteString
 randomEventId = do
 	(ids, _) <- first (Signed.idnt <$>) <$> allEvents
@@ -42,6 +47,11 @@ selectEventWithId idnt = withSQLite ("foo_mini_ng_" ++ abc ++ ".sqlite3") $ \db 
 filterEvents :: Filter.Filter -> IO ([Signed.E], String)
 filterEvents =
 	uncurry allEvents' . sqlWhere selToSql . filterToFilter
+
+filterEvents' :: Filter.Filter -> IO ([Signed.E], String)
+filterEvents' f =
+	uncurry allEvents'' (sqlWhere selToSql $ filterToFilter f)
+		$ fromMaybe 500 (Filter.limit f)
 
 showSqlWhere :: Filter.Filter -> (String, [Value])
 showSqlWhere = sqlWhere selToSql . filterToFilter
