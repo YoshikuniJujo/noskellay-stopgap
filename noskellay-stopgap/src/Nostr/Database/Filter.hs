@@ -20,6 +20,9 @@ import Filter qualified as F
 
 import Nostr.Value qualified as V
 
+filtersToFilter :: [Filter.Filter] -> F.Filter e Sel
+filtersToFilter = foldr (F.Or . filterToFilter) F.Never
+
 filterToFilter :: Filter.Filter -> F.Filter e Sel
 filterToFilter f =
 	maybe F.Always (foldr (F.Or . idToFilter) F.Never) (Filter.ids f) `F.And`

@@ -53,5 +53,10 @@ filterEvents' f =
 	uncurry allEvents'' (sqlWhere selToSql $ filterToFilter f)
 		$ fromMaybe 500 (Filter.limit f)
 
+filtersEvents :: [Filter.Filter] -> IO ([Signed.E], String)
+filtersEvents fs =
+	uncurry allEvents'' (sqlWhere selToSql $ filtersToFilter fs)
+		$ maybe 500 sum (sequence $ Filter.limit <$> fs)
+
 showSqlWhere :: Filter.Filter -> (String, [Value])
 showSqlWhere = sqlWhere selToSql . filterToFilter
