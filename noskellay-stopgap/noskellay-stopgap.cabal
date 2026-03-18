@@ -57,6 +57,7 @@ library
       Tools
       ToolsTH
       TrySQL
+      TrySQLNotMini
   other-modules:
       Paths_noskellay_stopgap
   autogen-modules:

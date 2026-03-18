@@ -21,6 +21,9 @@ import Database.SmplstSQLite3 qualified as SQL
 import "try-nostr-event-ng" Nostr.Event.Json qualified as EvJsn
 import Event.NG.Database qualified as Db
 
+import Nostr.Database.Filter
+import Nostr.Filter.Json qualified as FltJsn
+
 main :: IO ()
 main = SQL.withSQLite "foo_ng.sqlite3" realMain
 
@@ -37,7 +40,8 @@ realMain db = runServer "0.0.0.0" 10000 \pconn -> acceptRequest pconn >>= \conn 
 					print sjsns
 					putStrLn ""
 --					(\snd -> sendDataMessage conn $ Text snd Nothing) `mapM_` sjsns
-					sendDataMessages conn . tail $ (\snd -> Text snd Nothing) <$> sjsns
+--					sendDataMessages conn . tail $ (\snd -> Text snd Nothing) <$> sjsns
+					sendDataMessages conn $ (\snd -> Text snd Nothing) <$> sjsns
 		r@(ControlMessage (Close _ _)) -> print r
 		r -> print r >> go
 	sendClose conn ("Good-bye!" :: T.Text)
@@ -53,8 +57,16 @@ recToSend db = \case
 		pure $ Just [
 			Array [String "OK", String i, Bool True, String ""]
 			]
-	Array (toList -> String "REQ" : String i : _) -> do
-		(evs, _) <- Db.selectAll db
+	Array (toList -> String "REQ" : String i : fs) -> do
+		putStrLn $ "FILTERS: " ++ show fs
+		putStrLn $ "FILTERS: " ++ show (filtersToFilter $ mapMaybe FltJsn.decode fs)
+--		(evs, _) <- Db.selectAll db
+		putStrLn $ "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOPS!!!"
+		print . FltJsn.decode $ head fs
+		putStrLn $ "PPPPPPPPPPOOOOOOOOOOOOOOOOOOOOOOOOOOOOPS!!!"
+		print . (filterToFilter <$>) . FltJsn.decode $ head fs
+--		(evs, _) <- Db.selectAllFilter db . fromJust . FltJsn.decode $ head fs
+		(evs, _) <- Db.selectAllFilters db $ mapMaybe FltJsn.decode fs
 		print evs
 		let	ev' = (<$> evs) \ev -> maybe Nothing (\e ->
 				(Just $ Array [String "EVENT", String i, Object e]))

@@ -101,11 +101,13 @@ sqlWhere sts (F.Not f) = let (s, v) = sqlWhere sts f in
 
 valueToValue :: F.Value -> V.Value
 valueToValue (F.Text t) = V.VText t
+valueToValue (F.Integer i) = V.VInt i
+valueToValue (F.Blob bs) = V.VBlob bs
 valueToValue _ = error "yet"
 
 selToSql :: Sel -> String
 selToSql Id = "id"
-selToSql Author = "author"
+selToSql Author = "pubkey"
 selToSql Kind = "kind"
 selToSql (Tag c)
 	| isUpper c = "tags_u" ++ [toLower c] ++ ".value"

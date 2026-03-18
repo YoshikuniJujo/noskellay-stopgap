@@ -23,6 +23,11 @@ import Event.NG.Database.Common.Abc
 
 import Event.NG.Database.Abc
 
+import Nostr.Value
+import Nostr.Database.Filter
+
+import Nostr.Filter qualified as Filter
+
 fromSigned :: Signed.E -> IO (E, [(T.Text, Tag)])
 fromSigned e = do
 	dct <- genId $ fromAbc abc
@@ -51,6 +56,35 @@ selectAll db = withPrepared db "SELECT * FROM events" \sm ->
 selectAll' :: SQLite -> String -> IO ([Signed.E], String)
 selectAll' db wh = withPrepared db ("SELECT * FROM events" ++ leftJoins abc ++ " where " ++ wh) \sm ->
 	$(mkSelectAll TH.columns 'sm 'E 'toSigned)
+
+selectAll'' :: SQLite -> String -> [Value] -> Int -> IO ([Signed.E], String)
+selectAll'' db wh vs lmt = do
+	putStrLn "selectAll'' begin"
+	putStrLn ("SELECT * FROM events" ++
+		leftJoins abc ++ " where " ++
+		wh ++ " ORDER BY created_at DESC")
+	print vs
+	putStrLn "before prepared"
+	withPrepared db ("SELECT * FROM events" ++
+		leftJoins abc ++ " where " ++
+		wh ++ " ORDER BY created_at DESC") \sm -> do
+		putStrLn "SQL prepared"
+		zipWithM (bindN' sm) [1..] vs
+		putStrLn ""
+		$(mkSelectAll' TH.columns 'lmt 'sm 'E 'toSigned)
+
+selectAllFilter :: SQLite -> Filter.Filter -> IO ([Signed.E], String)
+selectAllFilter db f = do
+	putStrLn "selectAllFilter begin"
+	r <- uncurry (selectAll'' db) (sqlWhere selToSql $ filterToFilter f)
+		$ maybe 500 id (Filter.limit f)
+	putStrLn "selectAllFilter end"
+	pure r
+
+selectAllFilters :: SQLite -> [Filter.Filter] -> IO ([Signed.E], String)
+selectAllFilters db fs =
+	uncurry (selectAll'' db) (sqlWhere selToSql $ filtersToFilter fs)
+		$ maybe 500 sum (sequence $ Filter.limit <$> fs)
 
 count :: SQLite -> IO (Int, String)
 count db = withPrepared db "SELECT COUNT(*) FROM events" \sm -> do
