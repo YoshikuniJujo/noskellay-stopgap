@@ -8,6 +8,7 @@
 module Main (main) where
 
 import Control.Arrow
+import Control.Concurrent
 import Data.Function
 import Data.Foldable
 import Data.Traversable
@@ -58,6 +59,7 @@ recToSend db = \case
 			Array [String "OK", String i, Bool True, String ""]
 			]
 	Array (toList -> String "REQ" : String i : fs) -> do
+		forkIO $ putStrLn "OOPS!"
 		putStrLn $ "FILTERS: " ++ show fs
 		putStrLn $ "FILTERS: " ++ show (filtersToFilter $ mapMaybe FltJsn.decode fs)
 --		(evs, _) <- Db.selectAll db
