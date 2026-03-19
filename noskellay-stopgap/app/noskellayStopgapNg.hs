@@ -19,36 +19,46 @@ import Data.Aeson.KeyMap qualified as KM
 import Network.WebSockets
 import Database.SmplstSQLite3 qualified as SQL
 
+import "try-nostr-event-ng" Nostr.Event.Signed qualified as Signed
 import "try-nostr-event-ng" Nostr.Event.Json qualified as EvJsn
 import Event.NG.Database qualified as Db
 
 import Nostr.Database.Filter
 import Nostr.Filter.Json qualified as FltJsn
 
+import Control.Concurrent.STM
+import Data.Map qualified as Map
+import Data.UUIDv7
+
 main :: IO ()
 main = SQL.withSQLite "foo_ng.sqlite3" realMain
 
 realMain :: SQL.SQLite -> IO ()
-realMain db = runServer "0.0.0.0" 10000 \pconn -> acceptRequest pconn >>= \conn -> do
-	fix \go -> receive conn >>= \case
-		r@(DataMessage _ _ _ (Text rjsn _)) -> do
-			print r
-			s <- maybe (pure Nothing) (recToSend db) $ decode rjsn
-			(>> go) case s of
-				Nothing -> pure ()
-				Just ((encode <$>) -> sjsns) -> do
-					putStrLn "FOOO"
-					print sjsns
-					putStrLn ""
---					(\snd -> sendDataMessage conn $ Text snd Nothing) `mapM_` sjsns
---					sendDataMessages conn . tail $ (\snd -> Text snd Nothing) <$> sjsns
-					sendDataMessages conn $ (\snd -> Text snd Nothing) <$> sjsns
-		r@(ControlMessage (Close _ _)) -> print r
-		r -> print r >> go
-	sendClose conn ("Good-bye!" :: T.Text)
+realMain db = do
+	foo <- atomically $ newTVar ([] :: Map.Map (UUIDv7, T.Text) (TChan Signed.E))
+	runServer "0.0.0.0" 10000 \pconn -> acceptRequest pconn >>= \conn -> do
+		putStrLn "CONNECTED"
+		uuid <- nextUUIDv7
+		print uuid
+		fix \go -> receive conn >>= \case
+			r@(DataMessage _ _ _ (Text rjsn _)) -> do
+				print r
+				s <- maybe (pure Nothing) (recToSend db foo uuid) $ decode rjsn
+				(>> (print uuid >> go)) case s of
+					Nothing -> pure ()
+					Just ((encode <$>) -> sjsns) -> do
+						putStrLn "FOOO"
+						print sjsns
+						putStrLn ""
+	--					(\snd -> sendDataMessage conn $ Text snd Nothing) `mapM_` sjsns
+	--					sendDataMessages conn . tail $ (\snd -> Text snd Nothing) <$> sjsns
+						sendDataMessages conn $ (\snd -> Text snd Nothing) <$> sjsns
+			r@(ControlMessage (Close _ _)) -> print r
+			r -> print r >> print uuid >> go
+		sendClose conn ("Good-bye!" :: T.Text)
 
-recToSend :: SQL.SQLite -> Value -> IO (Maybe [Value])
-recToSend db = \case
+recToSend :: SQL.SQLite -> TVar (Map.Map (UUIDv7, T.Text) (TChan Signed.E)) -> UUIDv7 -> Value -> IO (Maybe [Value])
+recToSend db chs uuid = \case
 	Array (toList -> String "EVENT" :
 			Object ((id &&& KM.lookup "id") -> (ev, Just (String i))) : _) -> do
 		Just (ev', ts) <- maybe (pure Nothing) ((Just <$>) . Db.fromSigned) $ EvJsn.decode' ev
@@ -59,7 +69,15 @@ recToSend db = \case
 			Array [String "OK", String i, Bool True, String ""]
 			]
 	Array (toList -> String "REQ" : String i : fs) -> do
-		forkIO $ putStrLn "OOPS!"
+		forkIO $ do
+			putStrLn "OOPS!"
+			ch' <- atomically do
+				ch <- newTChan
+				modifyTVar chs $ Map.insert (uuid, i) ch
+				pure ch
+			putStr "isEmptyTChan ch': "
+			print =<< atomically (isEmptyTChan ch')
+			atomically $ modifyTVar chs $ Map.delete (uuid, i)
 		putStrLn $ "FILTERS: " ++ show fs
 		putStrLn $ "FILTERS: " ++ show (filtersToFilter $ mapMaybe FltJsn.decode fs)
 --		(evs, _) <- Db.selectAll db

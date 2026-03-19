@@ -74,6 +74,7 @@ library
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -99,6 +100,7 @@ executable createTable
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -124,6 +126,7 @@ executable createTableMini
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -149,6 +152,7 @@ executable createTableMiniNew
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -174,6 +178,7 @@ executable createTableMiniNg
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -199,6 +204,7 @@ executable createTableNg
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -228,6 +234,7 @@ executable noskellay-stopgap-exe
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -253,6 +260,7 @@ executable noskellay-stopgap-ng
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -278,6 +286,7 @@ executable tryDatabase
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -303,6 +312,7 @@ executable tryDatabaseMini
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -328,6 +338,7 @@ executable tryDatabaseNg
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -353,6 +364,7 @@ executable tryDatabaseNgMini
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
@@ -383,6 +395,7 @@ test-suite noskellay-stopgap-test
     , ppad-secp256k1
     , random
     , simplest-sqlite
+    , stm
     , template-haskell
     , text
     , try-nostr-event
