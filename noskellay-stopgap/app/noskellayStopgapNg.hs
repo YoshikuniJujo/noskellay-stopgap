@@ -43,7 +43,7 @@ realMain db = do
 		fix \go -> receive conn >>= \case
 			r@(DataMessage _ _ _ (Text rjsn _)) -> do
 				print r
-				s <- maybe (pure Nothing) (recToSend db foo uuid) $ decode rjsn
+				s <- maybe (pure Nothing) (recToSend conn db foo uuid) $ decode rjsn
 				(>> (print uuid >> go)) case s of
 					Nothing -> pure ()
 					Just ((encode <$>) -> sjsns) -> do
@@ -57,13 +57,17 @@ realMain db = do
 			r -> print r >> print uuid >> go
 		sendClose conn ("Good-bye!" :: T.Text)
 
-recToSend :: SQL.SQLite -> TVar (Map.Map (UUIDv7, T.Text) (TChan Signed.E)) -> UUIDv7 -> Value -> IO (Maybe [Value])
-recToSend db chs uuid = \case
+recToSend :: Connection -> SQL.SQLite -> TVar (Map.Map (UUIDv7, T.Text) (TChan Signed.E)) -> UUIDv7 -> Value -> IO (Maybe [Value])
+recToSend conn db chs uuid = \case
 	Array (toList -> String "EVENT" :
 			Object ((id &&& KM.lookup "id") -> (ev, Just (String i))) : _) -> do
-		Just (ev', ts) <- maybe (pure Nothing) ((Just <$>) . Db.fromSigned) $ EvJsn.decode' ev
+		let	msev = EvJsn.decode' ev
+		Just (ev', ts) <- maybe (pure Nothing) ((Just <$>) . Db.fromSigned) msev
 		_ <- Db.insert db ev'
 		uncurry (Db.insertTags db) `mapM_` ts
+		maybe (pure ()) (broadcast chs) msev
+		putStrLn "******** SIGNED EVENT ********"
+		print msev
 		print ev'
 		pure $ Just [
 			Array [String "OK", String i, Bool True, String ""]
@@ -77,6 +81,11 @@ recToSend db chs uuid = \case
 				pure ch
 			putStr "isEmptyTChan ch': "
 			print =<< atomically (isEmptyTChan ch')
+			ev <- atomically $ readTChan ch'
+
+			let	Just sjsn = encode <$> evToJsn i ev
+			sendDataMessages conn [Text sjsn Nothing]
+			
 			atomically $ modifyTVar chs $ Map.delete (uuid, i)
 		putStrLn $ "FILTERS: " ++ show fs
 		putStrLn $ "FILTERS: " ++ show (filtersToFilter $ mapMaybe FltJsn.decode fs)
@@ -95,3 +104,12 @@ recToSend db chs uuid = \case
 		pure . Just $ catMaybes ev' ++
 			[Array [String "EOSE", String i]]
 	_ -> pure Nothing
+
+evToJsn :: T.Text -> Signed.E -> Maybe Value
+evToJsn i ev =
+	maybe Nothing (\e -> (Just $ Array [String "EVENT", String i, Object e])) (EvJsn.encode' ev)
+
+broadcast :: TVar (Map.Map k (TChan Signed.E)) -> Signed.E -> IO ()
+broadcast vchs e = atomically do
+	chs <- readTVar vchs
+	(`writeTChan` e) `mapM_` Map.elems chs
