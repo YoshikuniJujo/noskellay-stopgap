@@ -33,9 +33,11 @@ import Data.UUIDv7
 main :: IO ()
 main = SQL.withSQLite "foo_ng.sqlite3" realMain
 
+data EC = Event Signed.E | CloseReq deriving Show
+
 realMain :: SQL.SQLite -> IO ()
 realMain db = do
-	foo <- atomically $ newTVar ([] :: Map.Map (UUIDv7, T.Text) (TChan Signed.E))
+	foo <- atomically $ newTVar ([] :: Map.Map (UUIDv7, T.Text) (TChan EC))
 	runServer "0.0.0.0" 10000 \pconn -> acceptRequest pconn >>= \conn -> do
 		putStrLn "CONNECTED"
 		uuid <- nextUUIDv7
@@ -57,7 +59,7 @@ realMain db = do
 			r -> print r >> print uuid >> go
 		sendClose conn ("Good-bye!" :: T.Text)
 
-recToSend :: Connection -> SQL.SQLite -> TVar (Map.Map (UUIDv7, T.Text) (TChan Signed.E)) -> UUIDv7 -> Value -> IO (Maybe [Value])
+recToSend :: Connection -> SQL.SQLite -> TVar (Map.Map (UUIDv7, T.Text) (TChan EC)) -> UUIDv7 -> Value -> IO (Maybe [Value])
 recToSend conn db chs uuid = \case
 	Array (toList -> String "EVENT" :
 			Object ((id &&& KM.lookup "id") -> (ev, Just (String i))) : _) -> do
@@ -73,18 +75,24 @@ recToSend conn db chs uuid = \case
 			Array [String "OK", String i, Bool True, String ""]
 			]
 	Array (toList -> String "REQ" : String i : fs) -> do
-		forkIO $ do
+		forkIO $ fix \go -> do
 			putStrLn "OOPS!"
 			ch' <- atomically do
 				ch <- newTChan
 				modifyTVar chs $ Map.insert (uuid, i) ch
 				pure ch
+			putStr "Number of Channels: "
+			print . length =<< atomically (readTVar chs)
+			print . Map.keys =<< atomically (readTVar chs)
 			putStr "isEmptyTChan ch': "
 			print =<< atomically (isEmptyTChan ch')
-			ev <- atomically $ readTChan ch'
-
-			let	Just sjsn = encode <$> evToJsn i ev
-			sendDataMessages conn [Text sjsn Nothing]
+			ec <- atomically $ readTChan ch'
+			case ec of
+				Event ev -> do
+					let	Just sjsn = encode <$> evToJsn i ev
+					sendDataMessages conn [Text sjsn Nothing]
+					go
+				CloseReq -> putStrLn "CLOSE REQ"
 			
 			atomically $ modifyTVar chs $ Map.delete (uuid, i)
 		putStrLn $ "FILTERS: " ++ show fs
@@ -103,13 +111,20 @@ recToSend conn db chs uuid = \case
 		print ev'
 		pure . Just $ catMaybes ev' ++
 			[Array [String "EOSE", String i]]
+	Array (toList -> String "CLOSE" : String i : []) -> do
+		putStr "CLOSE: "
+		print i
+		atomically do
+			c <- (Map.! (uuid, i)) <$> readTVar chs
+			writeTChan c CloseReq
+		pure Nothing
 	_ -> pure Nothing
 
 evToJsn :: T.Text -> Signed.E -> Maybe Value
 evToJsn i ev =
 	maybe Nothing (\e -> (Just $ Array [String "EVENT", String i, Object e])) (EvJsn.encode' ev)
 
-broadcast :: TVar (Map.Map k (TChan Signed.E)) -> Signed.E -> IO ()
+broadcast :: TVar (Map.Map k (TChan EC)) -> Signed.E -> IO ()
 broadcast vchs e = atomically do
 	chs <- readTVar vchs
-	(`writeTChan` e) `mapM_` Map.elems chs
+	(`writeTChan` Event e) `mapM_` Map.elems chs
